@@ -1,0 +1,48 @@
+INSN(LUI, UTypeInstruction)
+INSN(AUIPC, UTypeInstruction)
+
+INSN(JAL, JTypeInstruction)
+INSN(JALR, ITypeInstruction)
+
+INSN(BEQ, BTypeInstruction)
+INSN(BNE, BTypeInstruction)
+INSN(BTL, BTypeInstruction)
+INSN(BGE, BTypeInstruction)
+INSN(BLTU, BTypeInstruction)
+INSN(BGEU, BTypeInstruction)
+
+INSN(LB, ITypeInstruction)
+INSN(LH, ITypeInstruction)
+INSN(LW, ITypeInstruction)
+INSN(LBU, ITypeInstruction)
+INSN(LHU, ITypeInstruction)
+
+INSN(SB, STypeInstruction)
+INSN(SH, ITypeInstruction)
+INSN(SW, ITypeInstruction)
+INSN(ADDI, STypeInstruction)
+INSN(SLTI, STypeInstruction)
+INSN(SLTIU, STypeInstruction)
+INSN(XORI, STypeInstruction)
+INSN(ORI, STypeInstruction)
+INSN(ANDI, STypeInstruction)
+
+CUSTOM_ABI_INSN(SLLI, STypeInstruction)
+CUSTOM_ABI_INSN(SRLI, STypeInstruction)
+CUSTOM_ABI_INSN(SRAI, STypeInstruction)
+
+INSN(ADD, RTypeInstruction)
+INSN(SUB, RTypeInstruction)
+INSN(SLL, RTypeInstruction)
+INSN(SLT, RTypeInstruction)
+INSN(SLTU, RTypeInstruction)
+INSN(XOR, RTypeInstruction)
+INSN(SRL, RTypeInstruction)
+INSN(SRA, RTypeInstruction)
+INSN(OR, RTypeInstruction)
+INSN(AND, RTypeInstruction)
+
+CUSTOM_ABI_INSN(FENCE, ITypeInstruction)
+
+INSN(ECALL, ITypeInstruction)
+INSN(EBREAK, ITypeInstruction)

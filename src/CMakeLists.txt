@@ -1,0 +1,3 @@
+add_library(riscv_decoder_libs riscv_decode.cpp riscv_insn.cpp)
+target_include_directories(riscv_decoder_libs PUBLIC include)
+set_target_properties(riscv_decoder_libs PROPERTIES LINKER_LANGUAGE CXX)
