@@ -2,6 +2,7 @@
 #define RISCV_INSN_H
 
 #include <iostream>
+#include <cstring>
 
 enum InstructionType {
   INSN_R,
@@ -144,19 +145,17 @@ static const enum InstructionType OPCODE_TYPES_TABLE[] = {
   /* 0b1111111 */ INSN_UNDEFINED
 };
 
-class RISCVInstruction {
-protected:
+class BaseRISCVInstruction {
+private:
   std::string name;
 
 public:
-  RISCVInstruction(const char *name) : name(name) {};
+  BaseRISCVInstruction(const char *name) : name(name) {};
 
   std::string getName() const { return name; }
-  virtual operator bool() {
+  explicit operator bool() {
     return true;
   }
-  virtual std::ostream&
-    operator<<(std::ostream &s);
 };
 
 /*
@@ -165,7 +164,7 @@ public:
  * |  funct7   |   rs2   |  rs1  |  funct3  |  rd  | opcode |
  * ----------------------------------------------------------
  */
-class RTypeInstruction : public RISCVInstruction {
+class RTypeInstruction : public BaseRISCVInstruction {
 public:
   std::uint32_t funct7 : 7;
   std::uint32_t rs2 : 5;
@@ -176,18 +175,13 @@ public:
 
   RTypeInstruction(const char *name, std::uint32_t funct7, std::uint32_t rs2,
       std::uint32_t rs1, std::uint32_t funct3, std::uint32_t opcode)
-    : RISCVInstruction::RISCVInstruction(name), funct7(funct7),
+    : BaseRISCVInstruction::BaseRISCVInstruction(name), funct7(funct7),
       rs2(rs2), rs1(rs1), funct3(funct3), opcode(opcode) {};
 
   RTypeInstruction(const char *name, std::uint32_t insn);
-
-  std::ostream& operator<<(std::ostream &s) {
-    s << getName() << " { funct7: " << funct7 << ", rs2: " << rs2 << ", rs1: "
-      << rs1 << ", funct3: " << funct3 << ", rd: " << rd << ", opcode: " << opcode
-      << " }\n";
-    return s;
-  }
 };
+
+std::ostream& operator<<(std::ostream &s, RTypeInstruction &ins);
 
 /*
  *  31       25 24     20 19   15 14      12 11   7 6      0
@@ -195,7 +189,7 @@ public:
  * |      imm[11:0]      |  rs1  |  funct3  |  rd  | opcode |
  * ----------------------------------------------------------
  */
-class ITypeInstruction : public RISCVInstruction {
+class ITypeInstruction : public BaseRISCVInstruction {
 public:
   std::uint32_t imm : 12;
   std::uint32_t rs1 : 5;
@@ -205,17 +199,13 @@ public:
 
   ITypeInstruction(const char *name, std::uint32_t imm, std::uint32_t rs1,
       std::uint32_t funct3, std::uint32_t rd, std::uint32_t opcode)
-    : RISCVInstruction::RISCVInstruction(name), imm(imm), rs1(rs1),
+    : BaseRISCVInstruction::BaseRISCVInstruction(name), imm(imm), rs1(rs1),
       funct3(funct3), rd(rd), opcode(opcode) {};
 
   ITypeInstruction(const char *name, std::uint32_t insn);
-
-  std::ostream& operator<<(std::ostream &s) {
-    s << getName() << " { imm: " << imm << ", rs1: " << rs1 << ", funct3: "
-      << funct3 << ", rd: " << rd << ", opcode: " << opcode << " }\n";
-    return s;
-  }
 };
+
+std::ostream& operator<<(std::ostream &s, ITypeInstruction &ins);
 
 /*
  *  31       25 24     20 19   15 14      12 11         7 6      0
@@ -223,7 +213,7 @@ public:
  * | imm[11:5] |   rs2   |  rs1  |  funct3  |  imm[4:0]  | opcode |
  * ----------------------------------------------------------------
  */
-class STypeInstruction : public RISCVInstruction {
+class STypeInstruction : public BaseRISCVInstruction {
 public:
   std::uint32_t imm : 12;
   std::uint32_t rs2 : 5;
@@ -233,17 +223,13 @@ public:
 
   STypeInstruction(const char *name, std::uint32_t imm, std::uint32_t rs2, std::uint32_t rs1,
       std::uint32_t funct3, std::uint32_t opcode)
-    : RISCVInstruction::RISCVInstruction(name), imm(imm), rs2(rs2), rs1(rs1),
+    : BaseRISCVInstruction::BaseRISCVInstruction(name), imm(imm), rs2(rs2), rs1(rs1),
       funct3(funct3), opcode(opcode) {};
 
   STypeInstruction(const char *name, std::uint32_t insn);
-
-  std::ostream& operator<<(std::ostream &s) {
-    s << getName() << " { imm: " << imm << ", rs2: " << rs2 << ", rs1: " << rs1 << ", funct3: "
-      << funct3 << ", opcode: " << opcode << " }\n";
-    return s;
-  }
 };
+
+std::ostream& operator<<(std::ostream &s, STypeInstruction &ins);
 
 /*
  *  31           25 24   20 19   15 14      12 11           7 6      0
@@ -251,7 +237,7 @@ public:
  * | imm[12][10:5] |  rs2  |  rs1  |  funct3  | imm[4:1][11] | opcode |
  * --------------------------------------------------------------------
  */
-class BTypeInstruction : public RISCVInstruction {
+class BTypeInstruction : public BaseRISCVInstruction {
 public:
   std::uint32_t imm : 12;
   std::uint32_t rs2 : 5;
@@ -261,17 +247,13 @@ public:
 
   BTypeInstruction(const char *name, std::uint32_t imm, std::uint32_t rs2, std::uint32_t rs1,
       std::uint32_t funct3, std::uint32_t opcode)
-    : RISCVInstruction::RISCVInstruction(name), imm(imm), rs2(rs2), rs1(rs1),
+    : BaseRISCVInstruction::BaseRISCVInstruction(name), imm(imm), rs2(rs2), rs1(rs1),
       funct3(funct3), opcode(opcode) {};
 
   BTypeInstruction(const char *name, std::uint32_t insn);
-
-  std::ostream& operator<<(std::ostream &s) {
-    s << getName() << " { imm: " << imm << ", rs2: " << rs2 << ", rs1: " << rs1 << ", funct3: "
-      << funct3 << ", opcode: " << opcode << " }\n";
-    return s;
-  }
 };
+
+std::ostream& operator<<(std::ostream &s, BTypeInstruction &ins);
 
 /*
  *  31           25 24   20 19   15 14      12 11       7 6      0
@@ -279,23 +261,19 @@ public:
  * |                imm[31:12]                |    rd    | opcode |
  * ----------------------------------------------------------------
  */
-class UTypeInstruction : public RISCVInstruction {
+class UTypeInstruction : public BaseRISCVInstruction {
 public:
   std::uint32_t imm : 20;
   std::uint32_t rd : 5;
   std::uint32_t opcode : 7;
 
   UTypeInstruction(const char *name, std::uint32_t imm, std::uint32_t rd, std::uint32_t opcode)
-    : RISCVInstruction::RISCVInstruction(name), imm(imm), rd(rd), opcode(opcode) {};
+    : BaseRISCVInstruction::BaseRISCVInstruction(name), imm(imm), rd(rd), opcode(opcode) {};
 
   UTypeInstruction(const char *name, std::uint32_t insn);
-
-  std::ostream& operator<<(std::ostream &s) {
-    s << getName() << " { imm: " << imm << ", rd: " << rd
-      << ", opcode: " << opcode << " }\n";
-    return s;
-  }
 };
+
+std::ostream& operator<<(std::ostream &s, UTypeInstruction &ins);
 
 /*
  *  31           25 24   20 19   15 14      12 11       7 6      0
@@ -303,30 +281,68 @@ public:
  * |         imm[20][10:1][11][19:12]         |    rd    | opcode |
  * ----------------------------------------------------------------
  */
-class JTypeInstruction : public RISCVInstruction {
+class JTypeInstruction : public BaseRISCVInstruction {
 public:
   std::uint32_t imm : 20;
   std::uint32_t rd : 5;
   std::uint32_t opcode : 7;
 
   JTypeInstruction(const char *name, std::uint32_t imm, std::uint32_t rd, std::uint32_t opcode)
-    : RISCVInstruction::RISCVInstruction(name), imm(imm), rd(rd), opcode(opcode) {};
+    : BaseRISCVInstruction::BaseRISCVInstruction(name), imm(imm), rd(rd), opcode(opcode) {};
 
   JTypeInstruction(const char *name, std::uint32_t insn);
+};
 
-  std::ostream& operator<<(std::ostream &s) {
-    s << getName() << " { imm: " << imm << ", rd: " << rd
-      << ", opcode: " << opcode << " }\n";
-    return s;
+std::ostream& operator<<(std::ostream &s, JTypeInstruction &ins);
+
+class InvalidInstruction : public BaseRISCVInstruction {
+public:
+  InvalidInstruction() : BaseRISCVInstruction::BaseRISCVInstruction("Invalid instruction") { };
+  operator bool() {
+    return false;
   }
 };
 
-class InvalidInstruction : public RISCVInstruction {
+class RISCVInstruction {
 public:
-  InvalidInstruction() : RISCVInstruction::RISCVInstruction("Invalid instruction") { };
-  operator bool() override {
-    return false;
-  }
+  int type;
+  union ins {
+    RTypeInstruction r;
+    ITypeInstruction i;
+    STypeInstruction s;
+    BTypeInstruction b;
+    UTypeInstruction u;
+    JTypeInstruction j;
+    InvalidInstruction err;
+
+    ins(int type) {};
+    ~ins() {};
+  } ins{type};
+
+  RISCVInstruction() : type(INSN_UNDEFINED) {};
+  RISCVInstruction(const RISCVInstruction &other) {
+    type = other.type;
+    memcpy(reinterpret_cast<void *>(&ins), &other.ins, sizeof(ins));
+  };
+
+  void setRType(RTypeInstruction &r1) {
+    type = INSN_R; memcpy(reinterpret_cast<void *>(&ins.r), &r1, sizeof(ins.r));
+  };
+  void setIType(ITypeInstruction &i1) {
+    type = INSN_I; memcpy(reinterpret_cast<void *>(&ins.i), &i1, sizeof(ins.i));
+  };
+  void setSType(STypeInstruction &s1) {
+    type = INSN_S; memcpy(reinterpret_cast<void *>(&ins.s), &s1, sizeof(ins.s));
+  };
+  void setBType(BTypeInstruction &b1) {
+    type = INSN_B; memcpy(reinterpret_cast<void *>(&ins.b), &b1, sizeof(ins.b));
+  };
+  void setUType(UTypeInstruction &u1) {
+    type = INSN_U; memcpy(reinterpret_cast<void *>(&ins.u), &u1, sizeof(ins.u));
+  };
+  void setJType(JTypeInstruction &j1) {
+    type = INSN_J; memcpy(reinterpret_cast<void *>(&ins.j), &j1, sizeof(ins.j));
+  };
 };
 
 #endif // RISCV_INSN_H

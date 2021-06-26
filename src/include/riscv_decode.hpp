@@ -6,16 +6,22 @@
 #include <optional>
 
 #define USE_RV32I 0x1
-#define USE_RV64I 0x2
+#define USE_RV64I 0x3
 
 class BaseRISCVDecoder {
 public:
-  virtual std::optional<RTypeInstruction> decodeRType(std::uint32_t insn, std::uint32_t opcode);
-  virtual std::optional<ITypeInstruction> decodeIType(std::uint32_t insn, std::uint32_t opcode);
-  virtual std::optional<STypeInstruction> decodeSType(std::uint32_t insn, std::uint32_t opcode);
-  virtual std::optional<BTypeInstruction> decodeBType(std::uint32_t insn, std::uint32_t opcode);
-  virtual std::optional<UTypeInstruction> decodeUType(std::uint32_t insn, std::uint32_t opcode);
-  virtual std::optional<JTypeInstruction> decodeJType(std::uint32_t insn, std::uint32_t opcode);
+  std::optional<RTypeInstruction> decodeRType(std::uint32_t insn, std::uint32_t opcode)
+      { return std::optional<RTypeInstruction>(); };
+  std::optional<ITypeInstruction> decodeIType(std::uint32_t insn, std::uint32_t opcode)
+      { return std::optional<ITypeInstruction>(); };
+  std::optional<STypeInstruction> decodeSType(std::uint32_t insn, std::uint32_t opcode)
+      { return std::optional<STypeInstruction>(); };
+  std::optional<BTypeInstruction> decodeBType(std::uint32_t insn, std::uint32_t opcode)
+      { return std::optional<BTypeInstruction>(); };
+  std::optional<UTypeInstruction> decodeUType(std::uint32_t insn, std::uint32_t opcode)
+      { return std::optional<UTypeInstruction>(); };
+  std::optional<JTypeInstruction> decodeJType(std::uint32_t insn, std::uint32_t opcode)
+      { return std::optional<JTypeInstruction>(); };
 };
 
 class RISCVDecoder : public BaseRISCVDecoder {

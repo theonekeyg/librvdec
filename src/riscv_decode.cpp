@@ -2,14 +2,16 @@
 #include "riscv_insn.hpp"
 
 RISCVInstruction RISCVDecoder::decode(std::uint32_t insn) {
+  RISCVInstruction ins{};
   std::uint32_t opcode = insn & 0b1111111;
   switch (OPCODE_TYPES_TABLE[opcode]) {
     case INSN_R:
       for (auto decoder : decoders) {
+        // @@@
         std::optional<RTypeInstruction> decoded_insn
-          = decoder.decodeRType(insn, opcode);
+          = (*(RV32IDecoder *)&decoder).decodeRType(insn, opcode);
         if (decoded_insn) {
-          return decoded_insn.value();
+          ins.setRType(decoded_insn.value());
         }
       }
       break;
@@ -18,7 +20,7 @@ RISCVInstruction RISCVDecoder::decode(std::uint32_t insn) {
         std::optional<ITypeInstruction> decoded_insn
           = decoder.decodeIType(insn, opcode);
         if (decoded_insn) {
-          return decoded_insn.value();
+          ins.setIType(decoded_insn.value());
         }
       }
       break;
@@ -27,7 +29,7 @@ RISCVInstruction RISCVDecoder::decode(std::uint32_t insn) {
         std::optional<STypeInstruction> decoded_insn
           = decoder.decodeSType(insn, opcode);
         if (decoded_insn) {
-          return decoded_insn.value();
+          ins.setSType(decoded_insn.value());
         }
       }
       break;
@@ -36,7 +38,7 @@ RISCVInstruction RISCVDecoder::decode(std::uint32_t insn) {
         std::optional<BTypeInstruction> decoded_insn
           = decoder.decodeBType(insn, opcode);
         if (decoded_insn) {
-          return decoded_insn.value();
+          ins.setBType(decoded_insn.value());
         }
       }
       break;
@@ -45,7 +47,7 @@ RISCVInstruction RISCVDecoder::decode(std::uint32_t insn) {
         std::optional<UTypeInstruction> decoded_insn
           = decoder.decodeUType(insn, opcode);
         if (decoded_insn) {
-          return decoded_insn.value();
+          ins.setUType(decoded_insn.value());
         }
       }
       break;
@@ -54,12 +56,12 @@ RISCVInstruction RISCVDecoder::decode(std::uint32_t insn) {
         std::optional<JTypeInstruction> decoded_insn
           = decoder.decodeJType(insn, opcode);
         if (decoded_insn) {
-          return decoded_insn.value();
+          ins.setJType(decoded_insn.value());
         }
       }
       break;
   }
-  return InvalidInstruction();
+  return ins;
 }
 
 std::optional<RTypeInstruction> RV32IDecoder::decodeRType(
