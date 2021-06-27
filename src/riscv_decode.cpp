@@ -7,9 +7,8 @@ RISCVInstruction RISCVDecoder::decode(std::uint32_t insn) {
   switch (OPCODE_TYPES_TABLE[opcode]) {
     case INSN_R:
       for (auto decoder : decoders) {
-        // @@@
         std::optional<RTypeInstruction> decoded_insn
-          = (*(RV32IDecoder *)&decoder).decodeRType(insn, opcode);
+          = decoder.decodeRType(insn, opcode);
         if (decoded_insn) {
           ins.setRType(decoded_insn.value());
         }
@@ -71,30 +70,30 @@ std::optional<RTypeInstruction> RV32IDecoder::decodeRType(
   switch (funct3) {
     case 0:
       if (funct7 == 0b0000000) {
-        return std::optional(ADD("ADD", insn));
+        return std::optional(ADD(KIND_ADD, insn));
       } else if (funct7 == 0b0100000) {
-        return std::optional(SUB("SUB", insn));
+        return std::optional(SUB(KIND_SUB, insn));
       }
       break;
     case 0b001:
-      return std::optional(SLL("SLL", insn));
+      return std::optional(SLL(KIND_SLL, insn));
     case 0b010:
-      return std::optional(SLT("SLT", insn));
+      return std::optional(SLT(KIND_SLT, insn));
     case 0b011:
-      return std::optional(SLTU("SLTU", insn));
+      return std::optional(SLTU(KIND_SLTU, insn));
     case 0b100:
-      return std::optional(XOR("XOR", insn));
+      return std::optional(XOR(KIND_XOR, insn));
     case 0b101:
       if (funct7 == 0b0000000) {
-        return std::optional(SRL("SRL", insn));
+        return std::optional(SRL(KIND_SRL, insn));
       } else if (funct7 == 0b0100000) {
-        return std::optional(SRA("SRA", insn));
+        return std::optional(SRA(KIND_SRA, insn));
       }
       break;
     case 0b110:
-      return std::optional(OR("OR", insn));
+      return std::optional(OR(KIND_OR, insn));
     case 0b111:
-      return std::optional(AND("AND", insn));
+      return std::optional(AND(KIND_AND, insn));
   }
   return std::optional<RTypeInstruction>();
 }
@@ -104,19 +103,19 @@ std::optional<ITypeInstruction> RV32IDecoder::decodeIType(
   std::uint32_t funct3 = (insn >> 12) & 0b111;
   switch (opcode) {
     case 0b1100111:
-      return std::optional(JALR("JALR", insn));
+      return std::optional(JALR(KIND_JALR, insn));
     case 0b0000011:
       switch (funct3) {
         case 0b000:
-          return std::optional(LB("LB", insn));
+          return std::optional(LB(KIND_LB, insn));
         case 0b001:
-          return std::optional(LH("LH", insn));
+          return std::optional(LH(KIND_LH, insn));
         case 0b010:
-          return std::optional(LW("LW", insn));
+          return std::optional(LW(KIND_LW, insn));
         case 0b100:
-          return std::optional(LBU("LBU", insn));
+          return std::optional(LBU(KIND_LBU, insn));
         case 0b101:
-          return std::optional(LHU("LHU", insn));
+          return std::optional(LHU(KIND_LHU, insn));
       }
       break;
   }

@@ -1,7 +1,7 @@
 #include "riscv_insn.hpp"
 
-RTypeInstruction::RTypeInstruction(const char *name, std::uint32_t insn)
-  : BaseRISCVInstruction::BaseRISCVInstruction(name) {
+RTypeInstruction::RTypeInstruction(enum RISCVKindInstruction kind, std::uint32_t insn)
+  : BaseRISCVInstruction::BaseRISCVInstruction(kind) {
     this->funct7 = (insn >> 24) & 0b1111111;
     this->rs2 = (insn >> 20) & 0b11111;
     this->rs1 = (insn >> 15) & 0b11111;
@@ -17,8 +17,8 @@ std::ostream& operator<<(std::ostream &s, RTypeInstruction &ins) {
   return s;
 }
 
-ITypeInstruction::ITypeInstruction(const char *name, std::uint32_t insn)
-  : BaseRISCVInstruction::BaseRISCVInstruction(name) {
+ITypeInstruction::ITypeInstruction(enum RISCVKindInstruction kind, std::uint32_t insn)
+  : BaseRISCVInstruction::BaseRISCVInstruction(kind) {
 }
 
 std::ostream& operator<<(std::ostream &s, ITypeInstruction &ins) {
@@ -27,8 +27,8 @@ std::ostream& operator<<(std::ostream &s, ITypeInstruction &ins) {
   return s;
 }
 
-STypeInstruction::STypeInstruction(const char *name, std::uint32_t insn)
-  : BaseRISCVInstruction::BaseRISCVInstruction(name) {
+STypeInstruction::STypeInstruction(enum RISCVKindInstruction kind, std::uint32_t insn)
+  : BaseRISCVInstruction::BaseRISCVInstruction(kind) {
 }
 
 std::ostream& operator<<(std::ostream &s, STypeInstruction &ins) {
@@ -38,8 +38,8 @@ std::ostream& operator<<(std::ostream &s, STypeInstruction &ins) {
   return s;
 }
 
-BTypeInstruction::BTypeInstruction(const char *name, std::uint32_t insn)
-  : BaseRISCVInstruction::BaseRISCVInstruction(name) {
+BTypeInstruction::BTypeInstruction(enum RISCVKindInstruction kind, std::uint32_t insn)
+  : BaseRISCVInstruction::BaseRISCVInstruction(kind) {
 }
 
 std::ostream& operator<<(std::ostream &s, BTypeInstruction &ins) {
@@ -49,8 +49,8 @@ std::ostream& operator<<(std::ostream &s, BTypeInstruction &ins) {
   return s;
 }
 
-UTypeInstruction::UTypeInstruction(const char *name, std::uint32_t insn)
-  : BaseRISCVInstruction::BaseRISCVInstruction(name) {
+UTypeInstruction::UTypeInstruction(enum RISCVKindInstruction kind, std::uint32_t insn)
+  : BaseRISCVInstruction::BaseRISCVInstruction(kind) {
 }
 
 std::ostream& operator<<(std::ostream &s, UTypeInstruction &ins) {
@@ -59,8 +59,8 @@ std::ostream& operator<<(std::ostream &s, UTypeInstruction &ins) {
   return s;
 }
 
-JTypeInstruction::JTypeInstruction(const char *name, std::uint32_t insn)
-  : BaseRISCVInstruction::BaseRISCVInstruction(name) {
+JTypeInstruction::JTypeInstruction(enum RISCVKindInstruction kind, std::uint32_t insn)
+  : BaseRISCVInstruction::BaseRISCVInstruction(kind) {
 }
 
 std::ostream& operator<<(std::ostream &s, JTypeInstruction &ins) {

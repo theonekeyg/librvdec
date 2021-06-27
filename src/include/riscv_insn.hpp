@@ -145,14 +145,29 @@ static const enum InstructionType OPCODE_TYPES_TABLE[] = {
   /* 0b1111111 */ INSN_UNDEFINED
 };
 
+#define INSN(insn, type) KIND_##insn,
+#define CUSTOM_ABI_INSN(insn, type) KIND_##insn,
+enum RISCVKindInstruction {
+#include "insn_set_defs/rv32i.def"
+#undef INSN
+#undef CUSTOM_ABI_INSN
+  KIND_ILLEGAL
+};
+
+#define INSN(insn, type) #insn,
+#define CUSTOM_ABI_INSN(insn, type) #insn,
+static const char *riscv_kind_names[] = {
+#include "insn_set_defs/rv32i.def"
+#undef INSN
+#undef CUSTOM_ABI_INSN
+};
+
 class BaseRISCVInstruction {
-private:
-  std::string name;
-
 public:
-  BaseRISCVInstruction(const char *name) : name(name) {};
+  enum RISCVKindInstruction kind;
+  BaseRISCVInstruction(enum RISCVKindInstruction kind) : kind(kind) {};
 
-  std::string getName() const { return name; }
+  std::string getName() const { return riscv_kind_names[kind]; }
   explicit operator bool() {
     return true;
   }
@@ -173,12 +188,12 @@ public:
   std::uint32_t rd : 5;
   std::uint32_t opcode : 7;
 
-  RTypeInstruction(const char *name, std::uint32_t funct7, std::uint32_t rs2,
+  RTypeInstruction(enum RISCVKindInstruction kind, std::uint32_t funct7, std::uint32_t rs2,
       std::uint32_t rs1, std::uint32_t funct3, std::uint32_t opcode)
-    : BaseRISCVInstruction::BaseRISCVInstruction(name), funct7(funct7),
+    : BaseRISCVInstruction::BaseRISCVInstruction(kind), funct7(funct7),
       rs2(rs2), rs1(rs1), funct3(funct3), opcode(opcode) {};
 
-  RTypeInstruction(const char *name, std::uint32_t insn);
+  RTypeInstruction(enum RISCVKindInstruction kind, std::uint32_t insn);
 };
 
 std::ostream& operator<<(std::ostream &s, RTypeInstruction &ins);
@@ -197,12 +212,12 @@ public:
   std::uint32_t rd : 5;
   std::uint32_t opcode : 7;
 
-  ITypeInstruction(const char *name, std::uint32_t imm, std::uint32_t rs1,
+  ITypeInstruction(enum RISCVKindInstruction kind, std::uint32_t imm, std::uint32_t rs1,
       std::uint32_t funct3, std::uint32_t rd, std::uint32_t opcode)
-    : BaseRISCVInstruction::BaseRISCVInstruction(name), imm(imm), rs1(rs1),
+    : BaseRISCVInstruction::BaseRISCVInstruction(kind), imm(imm), rs1(rs1),
       funct3(funct3), rd(rd), opcode(opcode) {};
 
-  ITypeInstruction(const char *name, std::uint32_t insn);
+  ITypeInstruction(enum RISCVKindInstruction kind, std::uint32_t insn);
 };
 
 std::ostream& operator<<(std::ostream &s, ITypeInstruction &ins);
@@ -221,12 +236,12 @@ public:
   std::uint32_t funct3 : 3;
   std::uint32_t opcode : 7;
 
-  STypeInstruction(const char *name, std::uint32_t imm, std::uint32_t rs2, std::uint32_t rs1,
-      std::uint32_t funct3, std::uint32_t opcode)
-    : BaseRISCVInstruction::BaseRISCVInstruction(name), imm(imm), rs2(rs2), rs1(rs1),
+  STypeInstruction(enum RISCVKindInstruction kind, std::uint32_t imm, std::uint32_t rs2,
+      std::uint32_t rs1, std::uint32_t funct3, std::uint32_t opcode)
+    : BaseRISCVInstruction::BaseRISCVInstruction(kind), imm(imm), rs2(rs2), rs1(rs1),
       funct3(funct3), opcode(opcode) {};
 
-  STypeInstruction(const char *name, std::uint32_t insn);
+  STypeInstruction(enum RISCVKindInstruction kind, std::uint32_t insn);
 };
 
 std::ostream& operator<<(std::ostream &s, STypeInstruction &ins);
@@ -245,12 +260,12 @@ public:
   std::uint32_t funct3 : 3;
   std::uint32_t opcode : 7;
 
-  BTypeInstruction(const char *name, std::uint32_t imm, std::uint32_t rs2, std::uint32_t rs1,
-      std::uint32_t funct3, std::uint32_t opcode)
-    : BaseRISCVInstruction::BaseRISCVInstruction(name), imm(imm), rs2(rs2), rs1(rs1),
+  BTypeInstruction(enum RISCVKindInstruction kind, std::uint32_t imm, std::uint32_t rs2,
+      std::uint32_t rs1, std::uint32_t funct3, std::uint32_t opcode)
+    : BaseRISCVInstruction::BaseRISCVInstruction(kind), imm(imm), rs2(rs2), rs1(rs1),
       funct3(funct3), opcode(opcode) {};
 
-  BTypeInstruction(const char *name, std::uint32_t insn);
+  BTypeInstruction(enum RISCVKindInstruction kind, std::uint32_t insn);
 };
 
 std::ostream& operator<<(std::ostream &s, BTypeInstruction &ins);
@@ -267,10 +282,11 @@ public:
   std::uint32_t rd : 5;
   std::uint32_t opcode : 7;
 
-  UTypeInstruction(const char *name, std::uint32_t imm, std::uint32_t rd, std::uint32_t opcode)
-    : BaseRISCVInstruction::BaseRISCVInstruction(name), imm(imm), rd(rd), opcode(opcode) {};
+  UTypeInstruction(enum RISCVKindInstruction kind, std::uint32_t imm, std::uint32_t rd,
+      std::uint32_t opcode)
+    : BaseRISCVInstruction::BaseRISCVInstruction(kind), imm(imm), rd(rd), opcode(opcode) {};
 
-  UTypeInstruction(const char *name, std::uint32_t insn);
+  UTypeInstruction(enum RISCVKindInstruction kind, std::uint32_t insn);
 };
 
 std::ostream& operator<<(std::ostream &s, UTypeInstruction &ins);
@@ -287,17 +303,18 @@ public:
   std::uint32_t rd : 5;
   std::uint32_t opcode : 7;
 
-  JTypeInstruction(const char *name, std::uint32_t imm, std::uint32_t rd, std::uint32_t opcode)
-    : BaseRISCVInstruction::BaseRISCVInstruction(name), imm(imm), rd(rd), opcode(opcode) {};
+  JTypeInstruction(enum RISCVKindInstruction kind, std::uint32_t imm, std::uint32_t rd,
+      std::uint32_t opcode)
+    : BaseRISCVInstruction::BaseRISCVInstruction(kind), imm(imm), rd(rd), opcode(opcode) {};
 
-  JTypeInstruction(const char *name, std::uint32_t insn);
+  JTypeInstruction(enum RISCVKindInstruction kind, std::uint32_t insn);
 };
 
 std::ostream& operator<<(std::ostream &s, JTypeInstruction &ins);
 
 class InvalidInstruction : public BaseRISCVInstruction {
 public:
-  InvalidInstruction() : BaseRISCVInstruction::BaseRISCVInstruction("Invalid instruction") { };
+  InvalidInstruction() : BaseRISCVInstruction::BaseRISCVInstruction(KIND_ILLEGAL) { };
   operator bool() {
     return false;
   }
