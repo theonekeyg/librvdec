@@ -118,6 +118,30 @@ std::optional<ITypeInstruction> RV32IDecoder::decodeIType(
           return std::optional(LHU(KIND_LHU, insn));
       }
       break;
+    case 0b0010011:
+      switch (funct3) {
+        case 0b000:
+          return std::optional(ADDI(KIND_ADDI, insn));
+        case 0b010:
+          return std::optional(SLTI(KIND_SLTI, insn));
+        case 0b011:
+          return std::optional(SLTIU(KIND_SLTIU, insn));
+        case 0b100:
+          return std::optional(XORI(KIND_XORI, insn));
+        case 0b110:
+          return std::optional(ORI(KIND_ORI, insn));
+        case 0b111:
+          return std::optional(ANDI(KIND_ANDI, insn));
+      }
+    case 0b0001111:
+      return std::optional(FENCE(KIND_FENCE, insn));
+    case 0b1110011: {
+      std::uint32_t imm = (insn >> 20) && 0x1111111;
+      if (imm) {
+        return std::optional(EBREAK(KIND_EBREAK, insn));
+      }
+      return std::optional(ECALL(KIND_ECALL, insn));
+    }
   }
   return std::optional<ITypeInstruction>();
 }
