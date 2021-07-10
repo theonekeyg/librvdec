@@ -59,7 +59,7 @@ void riscv_decode_s(struct riscv_insn *insn, int kind, uint32_t repr,
     uint32_t opcode) {
   insn->type = INSN_S;
   insn->kind = kind;
-  insn->s.imm = ((repr >> 7) & 0b11111) | ((repr >> 25) & 0b1111111);
+  insn->s.imm = ((repr >> 7) & 0b11111) | (((repr >> 25) & 0b1111111) << 5);
   insn->s.rs2 = (repr >> 20) & 0b11111;
   insn->s.rs1 = (repr >> 15) & 0b11111;
   insn->s.funct3 = (repr >> 12) & 0b111;
@@ -82,10 +82,22 @@ void riscv_decode_b(struct riscv_insn *insn, int kind, uint32_t repr,
 
 void riscv_decode_u(struct riscv_insn *insn, int kind, uint32_t repr,
     uint32_t opcode) {
+  insn->type = INSN_U;
+  insn->kind = kind;
+  insn->u.imm = (repr >> 12) & 0b11111111111111111111;
+  insn->u.rd = (repr >> 7) & 0b11111;
+  insn->u.opcode = opcode;
 }
 
 void riscv_decode_j(struct riscv_insn *insn, int kind, uint32_t repr,
     uint32_t opcode) {
+  insn->type = INSN_J;
+  insn->kind = kind;
+  int32_t imm = (repr >> 12) & 0b11111111111111111111;
+  insn->j.imm = ((imm >> 9) & 0b1111111111) | (((imm >> 8) & 1) << 10)
+              | ((imm & 0b11111111) << 11) | (((imm >> 19) & 1) << 19);
+  insn->j.rd = (repr >> 7) & 0b11111;
+  insn->j.opcode = opcode;
 }
 
 void riscv_decode_fence(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {

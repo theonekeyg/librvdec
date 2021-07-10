@@ -6,7 +6,7 @@ INSN(JALR, ITypeInstruction)
 
 INSN(BEQ, BTypeInstruction)
 INSN(BNE, BTypeInstruction)
-INSN(BTL, BTypeInstruction)
+INSN(BLT, BTypeInstruction)
 INSN(BGE, BTypeInstruction)
 INSN(BLTU, BTypeInstruction)
 INSN(BGEU, BTypeInstruction)
