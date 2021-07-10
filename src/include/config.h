@@ -1,0 +1,7 @@
+#ifndef RISCV_CONFIG_H
+#define RISCV_CONFIG_H
+
+#define SUPPORT_RV32I
+#define SUPPORT_RV64I
+
+#endif // RISCV_CONFIG_H
