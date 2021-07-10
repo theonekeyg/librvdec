@@ -241,6 +241,12 @@ struct riscv_insn {
       uint32_t rd : 5;
       uint32_t opcode : 7;
     } j;
+
+    /* The latter structures are meant to be used to specific ABI instructions.
+     * Handling them this way may not be ideal, as it requires to have
+     * separate structure for each weird instruction and some of
+     * the RISCV extensions are full of them. */
+
   };
 };
 
@@ -248,6 +254,8 @@ void riscv_decode_r(struct riscv_insn *insn, int kind, uint32_t repr,
     uint32_t opcode);
 void riscv_decode_i(struct riscv_insn *insn, int kind, uint32_t repr,
     uint32_t opcode);
+void riscv_decode_i_shamt(struct riscv_insn *insn, int kind, uint32_t repr,
+    uint32_t opcode, int shamt_bits_size);
 void riscv_decode_s(struct riscv_insn *insn, int kind, uint32_t repr,
     uint32_t opcode);
 void riscv_decode_b(struct riscv_insn *insn, int kind, uint32_t repr,

@@ -1,3 +1,5 @@
+#include <limits.h>
+
 #include "riscv_insn.h"
 
 static const char *reg_names[] = {
@@ -22,7 +24,7 @@ void riscv_decode_r(struct riscv_insn *insn, int kind, uint32_t repr,
     uint32_t opcode) {
   insn->type = INSN_R;
   insn->kind = kind;
-  insn->r.funct7 = (repr >> 24) & 0b1111111;
+  insn->r.funct7 = (repr >> 25) & 0b1111111;
   insn->r.rs2 = (repr >> 20) & 0b11111;
   insn->r.rs1 = (repr >> 15) & 0b11111;
   insn->r.funct3 = (repr >> 12) & 0b111;
@@ -41,12 +43,41 @@ void riscv_decode_i(struct riscv_insn *insn, int kind, uint32_t repr,
   insn->i.opcode = opcode;
 }
 
+void riscv_decode_i_shamt(struct riscv_insn *insn, int kind, uint32_t repr,
+    uint32_t opcode, int shamt_bits_size) {
+  insn->type = INSN_I;
+  insn->kind = kind;
+  // Keep only shamt bits
+  insn->i.imm = (repr >> 20) & (~(UINT_MAX << (shamt_bits_size+1)));
+  insn->i.rs1 = (repr >> 15) & 0b11111;
+  insn->i.funct3 = (repr >> 12) & 0b111;
+  insn->i.rd = (repr >> 7) & 0b11111;
+  insn->i.opcode = opcode;
+}
+
 void riscv_decode_s(struct riscv_insn *insn, int kind, uint32_t repr,
     uint32_t opcode) {
+  insn->type = INSN_S;
+  insn->kind = kind;
+  insn->s.imm = ((repr >> 7) & 0b11111) | ((repr >> 25) & 0b1111111);
+  insn->s.rs2 = (repr >> 20) & 0b11111;
+  insn->s.rs1 = (repr >> 15) & 0b11111;
+  insn->s.funct3 = (repr >> 12) & 0b111;
+  insn->s.opcode = opcode;
 }
 
 void riscv_decode_b(struct riscv_insn *insn, int kind, uint32_t repr,
     uint32_t opcode) {
+  insn->type = INSN_B;
+  insn->kind = kind;
+  int32_t imm12_105 = (repr >> 25) & 0b1111111;
+  int32_t imm41_11 = (repr >> 7) & 0b11111;
+  insn->b.imm = ((imm41_11 >> 1) & 0b1111) | ((imm12_105 & 0b111111) << 4)
+              | ((imm41_11 & 1) << 10) | (((imm12_105 >> 6) & 1) << 11);
+  insn->b.rs2 = (repr >> 20) & 0b11111;
+  insn->b.rs1 = (repr >> 15) & 0b11111;
+  insn->b.funct3 = (repr >> 12) & 0b111;
+  insn->b.opcode = opcode;
 }
 
 void riscv_decode_u(struct riscv_insn *insn, int kind, uint32_t repr,

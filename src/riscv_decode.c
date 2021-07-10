@@ -141,18 +141,34 @@ int riscv_decode_rv32i_i(struct riscv_insn *insn, uint32_t repr, uint32_t opcode
         case 0b111:
           riscv_decode_i(insn, KIND_ANDI, repr, opcode);
           return 1;
+        case 0b001:
+          riscv_decode_i_shamt(insn, KIND_SLLI, repr, opcode, 5);
+          return 1;
+        case 0b101:
+          {
+            uint32_t funct7 = (repr >> 25) & 0b1111111;
+            if (funct7 == 0) {
+              riscv_decode_i_shamt(insn, KIND_SRLI, repr, opcode, 5);
+            } else {
+              riscv_decode_i_shamt(insn, KIND_SRAI, repr, opcode, 5);
+            }
+            return 1;
+          }
       }
+      break;
     case 0b0001111:
       riscv_decode_i(insn, KIND_FENCE, repr, opcode);
       return 1;
     case 0b1110011: {
-      uint32_t imm = (repr >> 20) && 0b1111111;
-      if (imm) {
+      uint32_t funct7 = (repr >> 20) & 0b1111111;
+      if (funct7 == 1) {
         riscv_decode_i(insn, KIND_EBREAK, repr, opcode);
         return 1;
+      } else if (funct7 == 0) {
+        riscv_decode_i(insn, KIND_ECALL, repr, opcode);
+        return 1;
       }
-      riscv_decode_i(insn, KIND_ECALL, repr, opcode);
-      return 1;
+      break;
     }
   }
   return 0;
