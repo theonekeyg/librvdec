@@ -243,4 +243,8 @@ TEST(rv32i, itype_instructions_srai) {
   EXPECT_EQ(ins.i.rs1, 19); // s3
 }
 
+TEST(rv32i, itype_instructions_fence) {
+  // @@@
+}
+
 } // namespace itype_insns

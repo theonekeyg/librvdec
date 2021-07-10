@@ -247,6 +247,16 @@ struct riscv_insn {
      * separate structure for each weird instruction and some of
      * the RISCV extensions are full of them. */
 
+    struct {
+      uint32_t fm : 4;
+      uint32_t pred : 4;
+      uint32_t succ : 4;
+      uint32_t rs1 : 5;
+      uint32_t funct3 : 3;
+      uint32_t rd : 5;
+      uint32_t opcode : 7;
+    } fence;
+
   };
 };
 
@@ -264,5 +274,6 @@ void riscv_decode_u(struct riscv_insn *insn, int kind, uint32_t repr,
     uint32_t opcode);
 void riscv_decode_j(struct riscv_insn *insn, int kind, uint32_t repr,
     uint32_t opcode);
+void riscv_decode_fence(struct riscv_insn *insn, uint32_t repr, uint32_t opcode);
 
 #endif // RISCV_INSN_H
