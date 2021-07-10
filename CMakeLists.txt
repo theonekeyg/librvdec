@@ -12,7 +12,3 @@ include(CTest)
 if(BUILD_TESTING)
   add_subdirectory(test)
 endif()
-
-add_executable(testme test.cpp)
-target_link_libraries(testme riscv_decoder_libs)
-# target_compile_options(testme PUBLIC -fno-rtti)
