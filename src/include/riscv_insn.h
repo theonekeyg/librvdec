@@ -145,18 +145,22 @@ static const enum InstructionType OPCODE_TYPES_TABLE[] = {
 };
 
 #define INSN(insn, type) KIND_##insn,
+#define INSN_REDECL(insn, type)
 #define CUSTOM_ABI_INSN(insn, type) KIND_##insn,
 enum RISCVKindInstruction {
 #include "insn_set_defs/rv32i.def"
+#include "insn_set_defs/rv64i.def"
 #undef INSN
 #undef CUSTOM_ABI_INSN
   KIND_ILLEGAL
 };
 
 #define INSN(insn, type) #insn,
+#define INSN_REDECL(insn, type)
 #define CUSTOM_ABI_INSN(insn, type) #insn,
 static const char *riscv_kind_names[] = {
 #include "insn_set_defs/rv32i.def"
+#include "insn_set_defs/rv64i.def"
 #undef INSN
 #undef CUSTOM_ABI_INSN
 };

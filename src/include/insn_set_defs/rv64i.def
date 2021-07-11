@@ -1,0 +1,23 @@
+INSN(LWU, INSN_I)
+INSN(LD, INSN_I)
+
+INSN(SD, INSN_S)
+
+/* These three instruction appear in both RV32I and RV64I instruction sets,
+ * the only difference between them in two sets is it's 5 bit length in RV32I
+ * and 6 bit in RV64I. But that difference is irrelevant in current implementation,
+ * since it uses the whole 12 bit immediate space for storing the shamt. */
+INSN_REDECL(SLLI, INSN_I)
+INSN_REDECL(SRLI, INSN_I)
+INSN_REDECL(SRAI, INSN_I)
+
+INSN(ADDIW, INSN_I)
+CUSTOM_ABI_INSN(SLLIW, INSN_I)
+CUSTOM_ABI_INSN(SRLIW, INSN_I)
+CUSTOM_ABI_INSN(SRAIW, INSN_I)
+
+INSN(ADDW, INSN_R)
+INSN(SUBW, INSN_R)
+INSN(SLLW, INSN_R)
+INSN(SRLW, INSN_R)
+INSN(SRAW, INSN_R)
