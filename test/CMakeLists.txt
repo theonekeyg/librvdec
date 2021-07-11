@@ -10,7 +10,14 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-add_executable(riscv_decoder_test test_rv64i.cpp)
+add_executable(riscv_decoder_test
+  test_rtype.cpp
+  test_itype.cpp
+  test_stype.cpp
+  test_btype.cpp
+  test_utype.cpp
+  test_jtype.cpp
+)
 
 target_link_libraries(riscv_decoder_test gtest_main)
 target_link_libraries(riscv_decoder_test riscv_decoder_libs)

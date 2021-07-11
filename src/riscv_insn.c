@@ -19,7 +19,6 @@ static const char *freg_names[] = {
   "ft10", "ft11"
 };
 
-
 void riscv_decode_r(struct riscv_insn *insn, int kind, uint32_t repr,
     uint32_t opcode) {
   insn->type = INSN_R;
