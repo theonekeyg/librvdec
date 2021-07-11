@@ -240,14 +240,97 @@ int riscv_decode_rv32i_j(struct riscv_insn *insn, uint32_t repr, uint32_t opcode
 }
 
 int riscv_decode_rv64i_r(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
+  if (opcode == 0b0111011) {
+    uint32_t funct7 = (repr >> 25) & 0b1111111;
+    uint32_t funct3 = (repr >> 12) & 0b111;
+    switch (funct3) {
+      case 0b000:
+        if (funct7 == 0) {
+          riscv_decode_r(insn, KIND_ADDW, repr, opcode);
+          return 1;
+        } else if (funct7 == 0b0100000) {
+          riscv_decode_r(insn, KIND_SUBW, repr, opcode);
+          return 1;
+        }
+        break;
+      case 0b001:
+        riscv_decode_r(insn, KIND_SLLW, repr, opcode);
+        return 1;
+      case 0b101:
+        if (funct7 == 0) {
+          riscv_decode_r(insn, KIND_SRLW, repr, opcode);
+          return 1;
+        } else if (funct7 == 0b0100000) {
+          riscv_decode_r(insn, KIND_SRAW, repr, opcode);
+          return 1;
+        }
+        break;
+    }
+  }
   return 0;
 }
 
 int riscv_decode_rv64i_i(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
+  uint32_t funct3 = (repr >> 12) & 0b111;
+  switch (opcode) {
+    case 0b0000011:
+      if (funct3 == 0b110) {
+        riscv_decode_i(insn, KIND_LWU, repr, opcode);
+        return 1;
+      } else if (funct3 == 0b011) {
+        riscv_decode_i(insn, KIND_LD, repr, opcode);
+        return 1;
+      }
+      break;
+    case 0b0010011:
+      if (funct3 == 0b001) {
+        riscv_decode_i_shamt(insn, KIND_SLLI, repr, opcode, 6);
+        return 1;
+      } else if (funct3 == 0b101) {
+        uint32_t funct7 = (repr >> 25) & 0b1111111;
+        if (funct7 == 0) {
+          riscv_decode_i_shamt(insn, KIND_SRLI, repr, opcode, 6);
+          return 1;
+        } else if (funct7 == 0b010000) {
+          riscv_decode_i_shamt(insn, KIND_SRAI, repr, opcode, 6);
+          return 1;
+        }
+      }
+      break;
+    case 0b0011011:
+      switch (funct3) {
+        case 0b000:
+          riscv_decode_i(insn, KIND_ADDIW, repr, opcode);
+          return 1;
+        case 0b001:
+          riscv_decode_i_shamt(insn, KIND_SLLIW, repr, opcode, 5);
+          return 1;
+        case 0b101:
+          {
+            uint32_t funct7 = (repr >> 25) & 0b1111111;
+            if (funct7 == 0) {
+              riscv_decode_i_shamt(insn, KIND_SRLIW, repr, opcode, 5);
+              return 1;
+            } else if (funct7 == 0b0100000) {
+              riscv_decode_i_shamt(insn, KIND_SRAIW, repr, opcode, 5);
+              return 1;
+            }
+          }
+          break;
+      }
+      break;
+  }
   return 0;
 }
 
 int riscv_decode_rv64i_s(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
+  if (opcode == 0b0100011) {
+    uint32_t funct3 = (repr >> 12) & 0b111;
+    if (funct3 == 0b011) {
+      riscv_decode_s(insn, KIND_SD, repr, opcode);
+      return 1;
+    }
+  }
   return 0;
 }
 

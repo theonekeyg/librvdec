@@ -99,6 +99,57 @@ TEST(rv32i, rtype_instructions_and) {
   EXPECT_EQ(ins.r.rs1, 20); // s4
   EXPECT_EQ(ins.r.rs2, 15); // a5
 }
+
+TEST(rv64i, rtype_instructions_addw) {
+  struct riscv_insn ins;
+  riscv_decode(&ins, /* addw a3,a3,s2 */ 0x012686bb);
+  EXPECT_EQ(ins.type, INSN_R);
+  EXPECT_EQ(ins.kind, KIND_ADDW);
+  EXPECT_EQ(ins.r.rd, 13); // a3
+  EXPECT_EQ(ins.r.rs1, 13); // a3
+  EXPECT_EQ(ins.r.rs2, 18); // s2
+}
+
+TEST(rv64i, rtype_instructions_subw) {
+  struct riscv_insn ins;
+  riscv_decode(&ins, /* subw t3,s0,s7 */ 0x41740e3b);
+  EXPECT_EQ(ins.type, INSN_R);
+  EXPECT_EQ(ins.kind, KIND_SUBW);
+  EXPECT_EQ(ins.r.rd, 28); // t3
+  EXPECT_EQ(ins.r.rs1, 8); // s0
+  EXPECT_EQ(ins.r.rs2, 23); // s7
+}
+
+TEST(rv64i, rtype_instructions_sllw) {
+  struct riscv_insn ins;
+  riscv_decode(&ins, /* sllw a3,s2,a5 */ 0x00f916bb);
+  EXPECT_EQ(ins.type, INSN_R);
+  EXPECT_EQ(ins.kind, KIND_SLLW);
+  EXPECT_EQ(ins.r.rd, 13); // a3
+  EXPECT_EQ(ins.r.rs1, 18); // s2
+  EXPECT_EQ(ins.r.rs2, 15); // a5
+}
+
+TEST(rv64i, rtype_instructions_srlw) {
+  struct riscv_insn ins;
+  riscv_decode(&ins, /* srlw s2,a4,a0 */ 0x00a7593b);
+  EXPECT_EQ(ins.type, INSN_R);
+  EXPECT_EQ(ins.kind, KIND_SRLW);
+  EXPECT_EQ(ins.r.rd, 18); // s2
+  EXPECT_EQ(ins.r.rs1, 14); // a4
+  EXPECT_EQ(ins.r.rs2, 10); // a0
+}
+
+TEST(rv64i, rtype_instructions_sraw) {
+  struct riscv_insn ins;
+  riscv_decode(&ins, /* sraw a5,a5,a4 */ 0x40e7d7bb);
+  EXPECT_EQ(ins.type, INSN_R);
+  EXPECT_EQ(ins.kind, KIND_SRAW);
+  EXPECT_EQ(ins.r.rd, 15); // a5
+  EXPECT_EQ(ins.r.rs1, 15); // a5
+  EXPECT_EQ(ins.r.rs2, 14); // a4
+}
+
 } // namespace rtype_insns
 
 namespace itype_insns {
@@ -236,6 +287,96 @@ TEST(rv32i, itype_instructions_ecall) {
 TEST(rv32i, itype_instructions_ebreak) {
   // FIXME
 }
+
+TEST(rv64i, itype_instructions_lwu) {
+  struct riscv_insn ins;
+  riscv_decode(&ins, /* lwu a5,-292(s0) */ 0xedc46783);
+  EXPECT_EQ(ins.type, INSN_I);
+  EXPECT_EQ(ins.kind, KIND_LWU);
+  EXPECT_EQ(ins.i.imm, -292);
+  EXPECT_EQ(ins.i.rd, 15); // a5
+  EXPECT_EQ(ins.i.rs1, 8); // s0
+}
+
+TEST(rv64i, itype_instructions_ld) {
+  struct riscv_insn ins;
+  riscv_decode(&ins, /* ld a4,-224(s0) */ 0xf2043703);
+  EXPECT_EQ(ins.type, INSN_I);
+  EXPECT_EQ(ins.kind, KIND_LD);
+  EXPECT_EQ(ins.i.imm, -224);
+  EXPECT_EQ(ins.i.rd, 14); // a4
+  EXPECT_EQ(ins.i.rs1, 8); // s0
+}
+
+TEST(rv64i, itype_instructions_slli) {
+  struct riscv_insn ins;
+  riscv_decode(&ins, /* slli a5,a3,0x20 */ 0x02069793);
+  EXPECT_EQ(ins.type, INSN_I);
+  EXPECT_EQ(ins.kind, KIND_SLLI);
+  EXPECT_EQ(ins.i.imm, 0x20);
+  EXPECT_EQ(ins.i.rd, 15); // a5
+  EXPECT_EQ(ins.i.rs1, 13); // a3
+}
+
+TEST(rv64i, itype_instructions_srli) {
+  struct riscv_insn ins;
+  riscv_decode(&ins, /* srli s3,s3,0x3 */ 0x0039d993);
+  EXPECT_EQ(ins.type, INSN_I);
+  EXPECT_EQ(ins.kind, KIND_SRLI);
+  EXPECT_EQ(ins.i.imm, 0x3);
+  EXPECT_EQ(ins.i.rd, 19); // s3
+  EXPECT_EQ(ins.i.rs1, 19); // s3
+}
+
+TEST(rv64i, itype_instructions_srai) {
+  struct riscv_insn ins;
+  riscv_decode(&ins, /* srai s3,s3,0x3f */ 0x43f9d993);
+  EXPECT_EQ(ins.type, INSN_I);
+  EXPECT_EQ(ins.kind, KIND_SRAI);
+  EXPECT_EQ(ins.i.imm, 0x3f);
+  EXPECT_EQ(ins.i.rd, 19); // s3
+  EXPECT_EQ(ins.i.rs1, 19); // s3
+}
+
+TEST(rv64i, itype_instructions_addiw) {
+  struct riscv_insn ins;
+  riscv_decode(&ins, /* addiw a5,a3,289 */ 0x1216879b);
+  EXPECT_EQ(ins.type, INSN_I);
+  EXPECT_EQ(ins.kind, KIND_ADDIW);
+  EXPECT_EQ(ins.i.imm, 289);
+  EXPECT_EQ(ins.i.rd, 15); // a5
+  EXPECT_EQ(ins.i.rs1, 13); // a3
+}
+
+TEST(rv64i, itype_instructions_slliw) {
+  struct riscv_insn ins;
+  riscv_decode(&ins, /* slliw a5,a5,0x10 */ 0x0107979b);
+  EXPECT_EQ(ins.type, INSN_I);
+  EXPECT_EQ(ins.kind, KIND_SLLIW);
+  EXPECT_EQ(ins.i.imm, 0x10);
+  EXPECT_EQ(ins.i.rd, 15); // a5
+  EXPECT_EQ(ins.i.rs1, 15); // a5
+}
+
+TEST(rv64i, itype_instructions_srliw) {
+  struct riscv_insn ins;
+  riscv_decode(&ins, /* srliw a5,s10,0x1f */ 0x01fd579b);
+  EXPECT_EQ(ins.type, INSN_I);
+  EXPECT_EQ(ins.kind, KIND_SRLIW);
+  EXPECT_EQ(ins.i.imm, 0x1f);
+  EXPECT_EQ(ins.i.rd, 15); // a5
+  EXPECT_EQ(ins.i.rs1, 26); // s10
+}
+
+TEST(rv64i, itype_instructions_sraiw) {
+  struct riscv_insn ins;
+  riscv_decode(&ins, /* srliw a5,a5,0x10 */ 0x4107d79b);
+  EXPECT_EQ(ins.type, INSN_I);
+  EXPECT_EQ(ins.kind, KIND_SRAIW);
+  EXPECT_EQ(ins.i.imm, 0x10);
+  EXPECT_EQ(ins.i.rd, 15); // a5
+  EXPECT_EQ(ins.i.rs1, 15); // a5
+}
 } // namespace itype_insns
 
 namespace stype_insns {
@@ -268,6 +409,16 @@ TEST(rv32i, stype_instructions_sw) {
   EXPECT_EQ(ins.s.imm, -372);
   EXPECT_EQ(ins.s.rs1, 8); // s0
   EXPECT_EQ(ins.s.rs2, 15); // a5
+}
+
+TEST(rv64i, stype_instructions_sd) {
+  struct riscv_insn ins;
+  riscv_decode(&ins, /* sd s0,1216(sp) */ 0x4c813023);
+  EXPECT_EQ(ins.type, INSN_S);
+  EXPECT_EQ(ins.kind, KIND_SD);
+  EXPECT_EQ(ins.s.imm, 1216);
+  EXPECT_EQ(ins.s.rs1, 2); // sp
+  EXPECT_EQ(ins.s.rs2, 8); // s0
 }
 } // namespace stype_insns
 
