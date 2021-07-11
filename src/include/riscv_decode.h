@@ -22,8 +22,5 @@ int riscv_decode_rv32i_j(struct riscv_insn *insn, uint32_t repr, uint32_t opcode
 int riscv_decode_rv64i_r(struct riscv_insn *insn, uint32_t repr, uint32_t opcode);
 int riscv_decode_rv64i_i(struct riscv_insn *insn, uint32_t repr, uint32_t opcode);
 int riscv_decode_rv64i_s(struct riscv_insn *insn, uint32_t repr, uint32_t opcode);
-int riscv_decode_rv64i_b(struct riscv_insn *insn, uint32_t repr, uint32_t opcode);
-int riscv_decode_rv64i_u(struct riscv_insn *insn, uint32_t repr, uint32_t opcode);
-int riscv_decode_rv64i_j(struct riscv_insn *insn, uint32_t repr, uint32_t opcode);
 
 #endif // RISCV_DECODE_H

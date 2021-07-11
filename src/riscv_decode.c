@@ -333,16 +333,3 @@ int riscv_decode_rv64i_s(struct riscv_insn *insn, uint32_t repr, uint32_t opcode
   }
   return 0;
 }
-
-int riscv_decode_rv64i_b(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
-  return 0;
-}
-
-int riscv_decode_rv64i_u(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
-  return 0;
-}
-
-int riscv_decode_rv64i_j(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
-  return 0;
-}
-
