@@ -1,8 +1,6 @@
 #include <gtest/gtest.h>
-extern "C" {
 #include <rvdec/decode.h>
 #include <rvdec/instruction.h>
-};
 
 namespace utype_insns {
 
