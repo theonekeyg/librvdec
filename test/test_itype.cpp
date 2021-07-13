@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
+
 #include <rvdec/decode.h>
 #include <rvdec/instruction.h>
+#include <rvdec/register.h>
 
 namespace itype_insns {
 
@@ -10,7 +12,7 @@ TEST(rv32i, itype_instructions_jalr) {
   EXPECT_EQ(ins.type, INSN_I);
   EXPECT_EQ(ins.kind, KIND_JALR);
   EXPECT_EQ(ins.i.imm, -94);
-  EXPECT_EQ(ins.i.rs1, 13); // a3
+  EXPECT_EQ(ins.i.rs1, RVREG_a3);
 }
 
 TEST(rv32i, itype_instructions_lb) {
@@ -19,8 +21,8 @@ TEST(rv32i, itype_instructions_lb) {
   EXPECT_EQ(ins.type, INSN_I);
   EXPECT_EQ(ins.kind, KIND_LB);
   EXPECT_EQ(ins.i.imm, 0);
-  EXPECT_EQ(ins.i.rd, 23); // s7
-  EXPECT_EQ(ins.i.rs1, 24); // s8
+  EXPECT_EQ(ins.i.rd, RVREG_s7);
+  EXPECT_EQ(ins.i.rs1, RVREG_s8);
 }
 
 TEST(rv32i, itype_instructions_lh) {
@@ -29,8 +31,8 @@ TEST(rv32i, itype_instructions_lh) {
   EXPECT_EQ(ins.type, INSN_I);
   EXPECT_EQ(ins.kind, KIND_LH);
   EXPECT_EQ(ins.i.imm, -210);
-  EXPECT_EQ(ins.i.rd, 15); // a5
-  EXPECT_EQ(ins.i.rs1, 8); // s0
+  EXPECT_EQ(ins.i.rd, RVREG_a5);
+  EXPECT_EQ(ins.i.rs1, RVREG_s0);
 }
 
 TEST(rv32i, itype_instructions_lw) {
@@ -39,8 +41,8 @@ TEST(rv32i, itype_instructions_lw) {
   EXPECT_EQ(ins.type, INSN_I);
   EXPECT_EQ(ins.kind, KIND_LW);
   EXPECT_EQ(ins.i.imm, -44);
-  EXPECT_EQ(ins.i.rd, 15); // a5
-  EXPECT_EQ(ins.i.rs1, 8); // s0
+  EXPECT_EQ(ins.i.rd, RVREG_a5);
+  EXPECT_EQ(ins.i.rs1, RVREG_s0);
 }
 
 TEST(rv32i, itype_instructions_lbu) {
@@ -49,8 +51,8 @@ TEST(rv32i, itype_instructions_lbu) {
   EXPECT_EQ(ins.type, INSN_I);
   EXPECT_EQ(ins.kind, KIND_LBU);
   EXPECT_EQ(ins.i.imm, 0);
-  EXPECT_EQ(ins.i.rd, 15); // a5
-  EXPECT_EQ(ins.i.rs1, 15); // a5
+  EXPECT_EQ(ins.i.rd, RVREG_a5);
+  EXPECT_EQ(ins.i.rs1, RVREG_a5);
 }
 
 TEST(rv32i, itype_instructions_lhu) {
@@ -59,8 +61,8 @@ TEST(rv32i, itype_instructions_lhu) {
   EXPECT_EQ(ins.type, INSN_I);
   EXPECT_EQ(ins.kind, KIND_LHU);
   EXPECT_EQ(ins.i.imm, 2);
-  EXPECT_EQ(ins.i.rd, 15); // a5
-  EXPECT_EQ(ins.i.rs1, 15); // a5
+  EXPECT_EQ(ins.i.rd, RVREG_a5);
+  EXPECT_EQ(ins.i.rs1, RVREG_a5);
 }
 
 TEST(rv32i, itype_instructions_addi) {
@@ -69,8 +71,8 @@ TEST(rv32i, itype_instructions_addi) {
   EXPECT_EQ(ins.type, INSN_I);
   EXPECT_EQ(ins.kind, KIND_ADDI);
   EXPECT_EQ(ins.i.imm, -200);
-  EXPECT_EQ(ins.i.rd, 15); // a5
-  EXPECT_EQ(ins.i.rs1, 8); // s0
+  EXPECT_EQ(ins.i.rd, RVREG_a5);
+  EXPECT_EQ(ins.i.rs1, RVREG_s0);
 }
 
 TEST(rv32i, itype_instructions_slti) {
@@ -99,8 +101,8 @@ TEST(rv32i, itype_instructions_slli) {
   EXPECT_EQ(ins.type, INSN_I);
   EXPECT_EQ(ins.kind, KIND_SLLI);
   EXPECT_EQ(ins.i.imm, 0x20);
-  EXPECT_EQ(ins.i.rd, 15); // a5
-  EXPECT_EQ(ins.i.rs1, 13); // a3
+  EXPECT_EQ(ins.i.rd, RVREG_a5);
+  EXPECT_EQ(ins.i.rs1, RVREG_a3);
 }
 
 TEST(rv32i, itype_instructions_srli) {
@@ -109,8 +111,8 @@ TEST(rv32i, itype_instructions_srli) {
   EXPECT_EQ(ins.type, INSN_I);
   EXPECT_EQ(ins.kind, KIND_SRLI);
   EXPECT_EQ(ins.i.imm, 0x1e);
-  EXPECT_EQ(ins.i.rd, 15); // a5
-  EXPECT_EQ(ins.i.rs1, 14); // a4
+  EXPECT_EQ(ins.i.rd, RVREG_a5);
+  EXPECT_EQ(ins.i.rs1, RVREG_a4);
 }
 
 TEST(rv32i, itype_instructions_srai) {
@@ -119,8 +121,8 @@ TEST(rv32i, itype_instructions_srai) {
   EXPECT_EQ(ins.type, INSN_I);
   EXPECT_EQ(ins.kind, KIND_SRAI);
   EXPECT_EQ(ins.i.imm, 0x3f);
-  EXPECT_EQ(ins.i.rd, 19); // s3
-  EXPECT_EQ(ins.i.rs1, 19); // s3
+  EXPECT_EQ(ins.i.rd, RVREG_s3);
+  EXPECT_EQ(ins.i.rs1, RVREG_s3);
 }
 
 TEST(rv32i, itype_instructions_fence) {
@@ -144,8 +146,8 @@ TEST(rv64i, itype_instructions_lwu) {
   EXPECT_EQ(ins.type, INSN_I);
   EXPECT_EQ(ins.kind, KIND_LWU);
   EXPECT_EQ(ins.i.imm, -292);
-  EXPECT_EQ(ins.i.rd, 15); // a5
-  EXPECT_EQ(ins.i.rs1, 8); // s0
+  EXPECT_EQ(ins.i.rd, RVREG_a5);
+  EXPECT_EQ(ins.i.rs1, RVREG_s0);
 }
 
 TEST(rv64i, itype_instructions_ld) {
@@ -154,8 +156,8 @@ TEST(rv64i, itype_instructions_ld) {
   EXPECT_EQ(ins.type, INSN_I);
   EXPECT_EQ(ins.kind, KIND_LD);
   EXPECT_EQ(ins.i.imm, -224);
-  EXPECT_EQ(ins.i.rd, 14); // a4
-  EXPECT_EQ(ins.i.rs1, 8); // s0
+  EXPECT_EQ(ins.i.rd, RVREG_a4);
+  EXPECT_EQ(ins.i.rs1, RVREG_s0);
 }
 
 TEST(rv64i, itype_instructions_slli) {
@@ -164,8 +166,8 @@ TEST(rv64i, itype_instructions_slli) {
   EXPECT_EQ(ins.type, INSN_I);
   EXPECT_EQ(ins.kind, KIND_SLLI);
   EXPECT_EQ(ins.i.imm, 0x20);
-  EXPECT_EQ(ins.i.rd, 15); // a5
-  EXPECT_EQ(ins.i.rs1, 13); // a3
+  EXPECT_EQ(ins.i.rd, RVREG_a5);
+  EXPECT_EQ(ins.i.rs1, RVREG_a3);
 }
 
 TEST(rv64i, itype_instructions_srli) {
@@ -174,8 +176,8 @@ TEST(rv64i, itype_instructions_srli) {
   EXPECT_EQ(ins.type, INSN_I);
   EXPECT_EQ(ins.kind, KIND_SRLI);
   EXPECT_EQ(ins.i.imm, 0x3);
-  EXPECT_EQ(ins.i.rd, 19); // s3
-  EXPECT_EQ(ins.i.rs1, 19); // s3
+  EXPECT_EQ(ins.i.rd, RVREG_s3);
+  EXPECT_EQ(ins.i.rs1, RVREG_s3);
 }
 
 TEST(rv64i, itype_instructions_srai) {
@@ -184,8 +186,8 @@ TEST(rv64i, itype_instructions_srai) {
   EXPECT_EQ(ins.type, INSN_I);
   EXPECT_EQ(ins.kind, KIND_SRAI);
   EXPECT_EQ(ins.i.imm, 0x3f);
-  EXPECT_EQ(ins.i.rd, 19); // s3
-  EXPECT_EQ(ins.i.rs1, 19); // s3
+  EXPECT_EQ(ins.i.rd, RVREG_s3);
+  EXPECT_EQ(ins.i.rs1, RVREG_s3);
 }
 
 TEST(rv64i, itype_instructions_addiw) {
@@ -194,8 +196,8 @@ TEST(rv64i, itype_instructions_addiw) {
   EXPECT_EQ(ins.type, INSN_I);
   EXPECT_EQ(ins.kind, KIND_ADDIW);
   EXPECT_EQ(ins.i.imm, 289);
-  EXPECT_EQ(ins.i.rd, 15); // a5
-  EXPECT_EQ(ins.i.rs1, 13); // a3
+  EXPECT_EQ(ins.i.rd, RVREG_a5);
+  EXPECT_EQ(ins.i.rs1, RVREG_a3);
 }
 
 TEST(rv64i, itype_instructions_slliw) {
@@ -204,8 +206,8 @@ TEST(rv64i, itype_instructions_slliw) {
   EXPECT_EQ(ins.type, INSN_I);
   EXPECT_EQ(ins.kind, KIND_SLLIW);
   EXPECT_EQ(ins.i.imm, 0x10);
-  EXPECT_EQ(ins.i.rd, 15); // a5
-  EXPECT_EQ(ins.i.rs1, 15); // a5
+  EXPECT_EQ(ins.i.rd, RVREG_a5);
+  EXPECT_EQ(ins.i.rs1, RVREG_a5);
 }
 
 TEST(rv64i, itype_instructions_srliw) {
@@ -214,8 +216,8 @@ TEST(rv64i, itype_instructions_srliw) {
   EXPECT_EQ(ins.type, INSN_I);
   EXPECT_EQ(ins.kind, KIND_SRLIW);
   EXPECT_EQ(ins.i.imm, 0x1f);
-  EXPECT_EQ(ins.i.rd, 15); // a5
-  EXPECT_EQ(ins.i.rs1, 26); // s10
+  EXPECT_EQ(ins.i.rd, RVREG_a5);
+  EXPECT_EQ(ins.i.rs1, RVREG_s10);
 }
 
 TEST(rv64i, itype_instructions_sraiw) {
@@ -224,7 +226,7 @@ TEST(rv64i, itype_instructions_sraiw) {
   EXPECT_EQ(ins.type, INSN_I);
   EXPECT_EQ(ins.kind, KIND_SRAIW);
   EXPECT_EQ(ins.i.imm, 0x10);
-  EXPECT_EQ(ins.i.rd, 15); // a5
-  EXPECT_EQ(ins.i.rs1, 15); // a5
+  EXPECT_EQ(ins.i.rd, RVREG_a5);
+  EXPECT_EQ(ins.i.rs1, RVREG_a5);
 }
 } // namespace itype_insns
