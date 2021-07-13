@@ -20,7 +20,7 @@ add_executable(riscv_decoder_test
 )
 
 target_link_libraries(riscv_decoder_test gtest_main)
-target_link_libraries(riscv_decoder_test riscv_decoder_libs)
+target_link_libraries(riscv_decoder_test rvdec)
 
 include(GoogleTest)
 gtest_discover_tests(riscv_decoder_test)

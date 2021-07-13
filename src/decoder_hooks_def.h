@@ -1,7 +1,7 @@
 #ifndef DECODER_HOOKS_DEF_H
 #define DECODER_HOOKS_DEF_H
 
-#include "riscv_decode.h"
+#include <rvdec/decode.h>
 
 static int riscv_hook_nop(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
   return 0;

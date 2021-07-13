@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 extern "C" {
-#include "riscv_decode.h"
-#include "riscv_insn.h"
+#include <rvdec/decode.h>
+#include <rvdec/instruction.h>
 };
 
 namespace itype_insns {

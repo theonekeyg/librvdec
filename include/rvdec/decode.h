@@ -2,7 +2,7 @@
 #define RISCV_DECODE_H
 
 #include <stdint.h>
-#include "riscv_insn.h"
+#include <rvdec/instruction.h>
 
 int riscv_decode(struct riscv_insn *insn, uint32_t repr);
 void riscv_decode_r(struct riscv_insn *insn, int kind, uint32_t repr, uint32_t opcode);

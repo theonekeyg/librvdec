@@ -1,8 +1,9 @@
 #ifndef DECODER_HOOKS_H
 #define DECODER_HOOKS_H
 
+#include <rvdec/instruction.h>
+
 #include "config.h"
-#include "riscv_insn.h"
 #include "decoder_hooks_def.h"
 
 struct decoder_hooks {

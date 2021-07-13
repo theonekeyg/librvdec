@@ -1,6 +1,6 @@
 #include <limits.h>
 
-#include "riscv_insn.h"
+#include <rvdec/instruction.h>
 
 static const char *reg_names[] = {
   "zero", "ra", "sp", "gp", "tp", "t0",
