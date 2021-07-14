@@ -101,7 +101,7 @@ void riscv_decode_j(struct riscv_insn *insn, int kind, uint32_t repr,
 
 void riscv_decode_fence(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
   insn->type = INSN_I;
-  insn->kind = KIND_FENCE;
+  insn->kind = RVINSN_FENCE;
   insn->fence.fm = (repr >> 28) & 0b1111;
   insn->fence.pred = (repr >> 24) & 0b1111;
   insn->fence.succ = (repr >> 20) & 0b1111;

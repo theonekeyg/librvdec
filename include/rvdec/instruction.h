@@ -17,15 +17,15 @@ enum InstructionType {
   INSN_UNDEFINED
 };
 
-#define INSN(insn, type) KIND_##insn,
+#define INSN(insn, type) RVINSN_##insn,
 #define INSN_REDECL(insn, type)
-#define CUSTOM_ABI_INSN(insn, type) KIND_##insn,
+#define CUSTOM_ABI_INSN(insn, type) RVINSN_##insn,
 enum RISCVKindInstruction {
 #include "insn_set_defs/rv32i.def"
 #include "insn_set_defs/rv64i.def"
 #undef INSN
 #undef CUSTOM_ABI_INSN
-  KIND_ILLEGAL
+  RVINSN_ILLEGAL
 };
 
 #define INSN(insn, type) #insn,

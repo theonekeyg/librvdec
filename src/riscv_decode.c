@@ -179,7 +179,7 @@ int riscv_decode(struct riscv_insn *insn, uint32_t repr) {
       }
       break;
   }
-  insn->kind = KIND_ILLEGAL;
+  insn->kind = RVINSN_ILLEGAL;
   return insn->kind;
 }
 
@@ -189,39 +189,39 @@ int riscv_decode_rv32i_r(struct riscv_insn *insn, uint32_t repr, uint32_t opcode
   switch (funct3) {
     case 0:
       if (funct7 == 0b0000000) {
-        riscv_decode_r(insn, KIND_ADD, repr, opcode);
+        riscv_decode_r(insn, RVINSN_ADD, repr, opcode);
         return 1;
       } else if (funct7 == 0b0100000) {
-        riscv_decode_r(insn, KIND_SUB, repr, opcode);
+        riscv_decode_r(insn, RVINSN_SUB, repr, opcode);
         return 1;
       }
       break;
     case 0b001:
-      riscv_decode_r(insn, KIND_SLL, repr, opcode);
+      riscv_decode_r(insn, RVINSN_SLL, repr, opcode);
       return 1;
     case 0b010:
-      riscv_decode_r(insn, KIND_SLT, repr, opcode);
+      riscv_decode_r(insn, RVINSN_SLT, repr, opcode);
       return 1;
     case 0b011:
-      riscv_decode_r(insn, KIND_SLTU, repr, opcode);
+      riscv_decode_r(insn, RVINSN_SLTU, repr, opcode);
       return 1;
     case 0b100:
-      riscv_decode_r(insn, KIND_XOR, repr, opcode);
+      riscv_decode_r(insn, RVINSN_XOR, repr, opcode);
       return 1;
     case 0b101:
       if (funct7 == 0b0000000) {
-        riscv_decode_r(insn, KIND_SRL, repr, opcode);
+        riscv_decode_r(insn, RVINSN_SRL, repr, opcode);
         return 1;
       } else if (funct7 == 0b0100000) {
-        riscv_decode_r(insn, KIND_SRA, repr, opcode);
+        riscv_decode_r(insn, RVINSN_SRA, repr, opcode);
         return 1;
       }
       break;
     case 0b110:
-      riscv_decode_r(insn, KIND_OR, repr, opcode);
+      riscv_decode_r(insn, RVINSN_OR, repr, opcode);
       return 1;
     case 0b111:
-      riscv_decode_r(insn, KIND_AND, repr, opcode);
+      riscv_decode_r(insn, RVINSN_AND, repr, opcode);
       return 1;
   }
   return 0;
@@ -231,72 +231,72 @@ int riscv_decode_rv32i_i(struct riscv_insn *insn, uint32_t repr, uint32_t opcode
   uint32_t funct3 = (repr >> 12) & 0b111;
   switch (opcode) {
     case 0b1100111:
-      riscv_decode_i(insn, KIND_JALR, repr, opcode);
+      riscv_decode_i(insn, RVINSN_JALR, repr, opcode);
       return 1;
     case 0b0000011:
       switch (funct3) {
         case 0b000:
-          riscv_decode_i(insn, KIND_LB, repr, opcode);
+          riscv_decode_i(insn, RVINSN_LB, repr, opcode);
           return 1;
         case 0b001:
-          riscv_decode_i(insn, KIND_LH, repr, opcode);
+          riscv_decode_i(insn, RVINSN_LH, repr, opcode);
           return 1;
         case 0b010:
-          riscv_decode_i(insn, KIND_LW, repr, opcode);
+          riscv_decode_i(insn, RVINSN_LW, repr, opcode);
           return 1;
         case 0b100:
-          riscv_decode_i(insn, KIND_LBU, repr, opcode);
+          riscv_decode_i(insn, RVINSN_LBU, repr, opcode);
           return 1;
         case 0b101:
-          riscv_decode_i(insn, KIND_LHU, repr, opcode);
+          riscv_decode_i(insn, RVINSN_LHU, repr, opcode);
           return 1;
       }
       break;
     case 0b0010011:
       switch (funct3) {
         case 0b000:
-          riscv_decode_i(insn, KIND_ADDI, repr, opcode);
+          riscv_decode_i(insn, RVINSN_ADDI, repr, opcode);
           return 1;
         case 0b010:
-          riscv_decode_i(insn, KIND_SLTI, repr, opcode);
+          riscv_decode_i(insn, RVINSN_SLTI, repr, opcode);
           return 1;
         case 0b011:
-          riscv_decode_i(insn, KIND_SLTIU, repr, opcode);
+          riscv_decode_i(insn, RVINSN_SLTIU, repr, opcode);
           return 1;
         case 0b100:
-          riscv_decode_i(insn, KIND_XORI, repr, opcode);
+          riscv_decode_i(insn, RVINSN_XORI, repr, opcode);
           return 1;
         case 0b110:
-          riscv_decode_i(insn, KIND_ORI, repr, opcode);
+          riscv_decode_i(insn, RVINSN_ORI, repr, opcode);
           return 1;
         case 0b111:
-          riscv_decode_i(insn, KIND_ANDI, repr, opcode);
+          riscv_decode_i(insn, RVINSN_ANDI, repr, opcode);
           return 1;
         case 0b001:
-          riscv_decode_i_shamt(insn, KIND_SLLI, repr, opcode, 5);
+          riscv_decode_i_shamt(insn, RVINSN_SLLI, repr, opcode, 5);
           return 1;
         case 0b101:
           {
             uint32_t funct7 = (repr >> 25) & 0b1111111;
             if (funct7 == 0) {
-              riscv_decode_i_shamt(insn, KIND_SRLI, repr, opcode, 5);
+              riscv_decode_i_shamt(insn, RVINSN_SRLI, repr, opcode, 5);
             } else {
-              riscv_decode_i_shamt(insn, KIND_SRAI, repr, opcode, 5);
+              riscv_decode_i_shamt(insn, RVINSN_SRAI, repr, opcode, 5);
             }
             return 1;
           }
       }
       break;
     case 0b0001111:
-      riscv_decode_i(insn, KIND_FENCE, repr, opcode);
+      riscv_decode_i(insn, RVINSN_FENCE, repr, opcode);
       return 1;
     case 0b1110011: {
       uint32_t funct7 = (repr >> 20) & 0b1111111;
       if (funct7 == 0) {
-        riscv_decode_i(insn, KIND_ECALL, repr, opcode);
+        riscv_decode_i(insn, RVINSN_ECALL, repr, opcode);
         return 1;
       } else if (funct7 == 1) {
-        riscv_decode_i(insn, KIND_EBREAK, repr, opcode);
+        riscv_decode_i(insn, RVINSN_EBREAK, repr, opcode);
         return 1;
       }
       break;
@@ -310,13 +310,13 @@ int riscv_decode_rv32i_s(struct riscv_insn *insn, uint32_t repr, uint32_t opcode
     uint32_t funct3 = (repr >> 12) & 0b111;
     switch (funct3) {
       case 0b000:
-        riscv_decode_s(insn, KIND_SB, repr, opcode);
+        riscv_decode_s(insn, RVINSN_SB, repr, opcode);
         return 1;
       case 0b001:
-        riscv_decode_s(insn, KIND_SH, repr, opcode);
+        riscv_decode_s(insn, RVINSN_SH, repr, opcode);
         return 1;
       case 0b010:
-        riscv_decode_s(insn, KIND_SW, repr, opcode);
+        riscv_decode_s(insn, RVINSN_SW, repr, opcode);
         return 1;
     }
   }
@@ -328,22 +328,22 @@ int riscv_decode_rv32i_b(struct riscv_insn *insn, uint32_t repr, uint32_t opcode
     uint32_t funct3 = (repr >> 12) & 0b111;
     switch (funct3) {
       case 0b000:
-        riscv_decode_b(insn, KIND_BEQ, repr, opcode);
+        riscv_decode_b(insn, RVINSN_BEQ, repr, opcode);
         return 1;
       case 0b001:
-        riscv_decode_b(insn, KIND_BNE, repr, opcode);
+        riscv_decode_b(insn, RVINSN_BNE, repr, opcode);
         return 1;
       case 0b100:
-        riscv_decode_b(insn, KIND_BLT, repr, opcode);
+        riscv_decode_b(insn, RVINSN_BLT, repr, opcode);
         return 1;
       case 0b101:
-        riscv_decode_b(insn, KIND_BGE, repr, opcode);
+        riscv_decode_b(insn, RVINSN_BGE, repr, opcode);
         return 1;
       case 0b110:
-        riscv_decode_b(insn, KIND_BLTU, repr, opcode);
+        riscv_decode_b(insn, RVINSN_BLTU, repr, opcode);
         return 1;
       case 0b111:
-        riscv_decode_b(insn, KIND_BGEU, repr, opcode);
+        riscv_decode_b(insn, RVINSN_BGEU, repr, opcode);
         return 1;
     }
   }
@@ -353,10 +353,10 @@ int riscv_decode_rv32i_b(struct riscv_insn *insn, uint32_t repr, uint32_t opcode
 int riscv_decode_rv32i_u(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
   switch (opcode) {
     case 0b0110111:
-      riscv_decode_u(insn, KIND_LUI, repr, opcode);
+      riscv_decode_u(insn, RVINSN_LUI, repr, opcode);
       return 1;
     case 0b0010111:
-      riscv_decode_u(insn, KIND_AUIPC, repr, opcode);
+      riscv_decode_u(insn, RVINSN_AUIPC, repr, opcode);
       return 1;
   }
   return 0;
@@ -364,7 +364,7 @@ int riscv_decode_rv32i_u(struct riscv_insn *insn, uint32_t repr, uint32_t opcode
 
 int riscv_decode_rv32i_j(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
   if (opcode == 0b1101111) {
-    riscv_decode_j(insn, KIND_JAL, repr, opcode);
+    riscv_decode_j(insn, RVINSN_JAL, repr, opcode);
     return 1;
   }
   return 0;
@@ -377,22 +377,22 @@ int riscv_decode_rv64i_r(struct riscv_insn *insn, uint32_t repr, uint32_t opcode
     switch (funct3) {
       case 0b000:
         if (funct7 == 0) {
-          riscv_decode_r(insn, KIND_ADDW, repr, opcode);
+          riscv_decode_r(insn, RVINSN_ADDW, repr, opcode);
           return 1;
         } else if (funct7 == 0b0100000) {
-          riscv_decode_r(insn, KIND_SUBW, repr, opcode);
+          riscv_decode_r(insn, RVINSN_SUBW, repr, opcode);
           return 1;
         }
         break;
       case 0b001:
-        riscv_decode_r(insn, KIND_SLLW, repr, opcode);
+        riscv_decode_r(insn, RVINSN_SLLW, repr, opcode);
         return 1;
       case 0b101:
         if (funct7 == 0) {
-          riscv_decode_r(insn, KIND_SRLW, repr, opcode);
+          riscv_decode_r(insn, RVINSN_SRLW, repr, opcode);
           return 1;
         } else if (funct7 == 0b0100000) {
-          riscv_decode_r(insn, KIND_SRAW, repr, opcode);
+          riscv_decode_r(insn, RVINSN_SRAW, repr, opcode);
           return 1;
         }
         break;
@@ -406,24 +406,24 @@ int riscv_decode_rv64i_i(struct riscv_insn *insn, uint32_t repr, uint32_t opcode
   switch (opcode) {
     case 0b0000011:
       if (funct3 == 0b110) {
-        riscv_decode_i(insn, KIND_LWU, repr, opcode);
+        riscv_decode_i(insn, RVINSN_LWU, repr, opcode);
         return 1;
       } else if (funct3 == 0b011) {
-        riscv_decode_i(insn, KIND_LD, repr, opcode);
+        riscv_decode_i(insn, RVINSN_LD, repr, opcode);
         return 1;
       }
       break;
     case 0b0010011:
       if (funct3 == 0b001) {
-        riscv_decode_i_shamt(insn, KIND_SLLI, repr, opcode, 6);
+        riscv_decode_i_shamt(insn, RVINSN_SLLI, repr, opcode, 6);
         return 1;
       } else if (funct3 == 0b101) {
         uint32_t funct7 = (repr >> 25) & 0b1111111;
         if (funct7 == 0) {
-          riscv_decode_i_shamt(insn, KIND_SRLI, repr, opcode, 6);
+          riscv_decode_i_shamt(insn, RVINSN_SRLI, repr, opcode, 6);
           return 1;
         } else if (funct7 == 0b010000) {
-          riscv_decode_i_shamt(insn, KIND_SRAI, repr, opcode, 6);
+          riscv_decode_i_shamt(insn, RVINSN_SRAI, repr, opcode, 6);
           return 1;
         }
       }
@@ -431,19 +431,19 @@ int riscv_decode_rv64i_i(struct riscv_insn *insn, uint32_t repr, uint32_t opcode
     case 0b0011011:
       switch (funct3) {
         case 0b000:
-          riscv_decode_i(insn, KIND_ADDIW, repr, opcode);
+          riscv_decode_i(insn, RVINSN_ADDIW, repr, opcode);
           return 1;
         case 0b001:
-          riscv_decode_i_shamt(insn, KIND_SLLIW, repr, opcode, 5);
+          riscv_decode_i_shamt(insn, RVINSN_SLLIW, repr, opcode, 5);
           return 1;
         case 0b101:
           {
             uint32_t funct7 = (repr >> 25) & 0b1111111;
             if (funct7 == 0) {
-              riscv_decode_i_shamt(insn, KIND_SRLIW, repr, opcode, 5);
+              riscv_decode_i_shamt(insn, RVINSN_SRLIW, repr, opcode, 5);
               return 1;
             } else if (funct7 == 0b0100000) {
-              riscv_decode_i_shamt(insn, KIND_SRAIW, repr, opcode, 5);
+              riscv_decode_i_shamt(insn, RVINSN_SRAIW, repr, opcode, 5);
               return 1;
             }
           }
@@ -458,7 +458,7 @@ int riscv_decode_rv64i_s(struct riscv_insn *insn, uint32_t repr, uint32_t opcode
   if (opcode == 0b0100011) {
     uint32_t funct3 = (repr >> 12) & 0b111;
     if (funct3 == 0b011) {
-      riscv_decode_s(insn, KIND_SD, repr, opcode);
+      riscv_decode_s(insn, RVINSN_SD, repr, opcode);
       return 1;
     }
   }
