@@ -10,7 +10,7 @@ or just use all instruction sets, which is the default.
 
 Clone the repo.
 
-`git clone https://github.com/theonekeyg/librvdec.git`
+`$ git clone https://github.com/theonekeyg/librvdec.git`
 
 Invoke cmake.
 
@@ -21,12 +21,16 @@ Compile and install the library.
 `$ make && make install`
 
 Tests are not built by default. To compile and run testsuite:
+
 `$ cd build/test && make && make test`
 
 ## Usage
 
 To decode an instruction, simply use
-`int riscv_decode(struct riscv_insn *, uint32_t)` function. It will check if the
+```c
+int riscv_decode(struct riscv_insn *, uint32_t)
+```
+It will check if the
 passed instruction belongs to one of the supported instruction sets. If it does,
 it parses the instruction, sets the appropriate `riscv_insn` fields and returns
 it's kind, otherwise it just returns `RVINSN_ILLEGAL`.
@@ -65,4 +69,4 @@ other ISAs.
 
 I can write a more complete guideline for such integrations, so if you're
 interested in forking the library for your needs, feel free to open the issue on
-github, so I'll know there is demand for it.
+[github](https://github.com/theonekeyg/librvdec), so I'll know there is demand for it.
