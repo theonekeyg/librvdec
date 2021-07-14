@@ -14,5 +14,5 @@ add_subdirectory(src)
 
 if(BUILD_TESTING)
   include(CTest)
-  add_subdirectory(test)
+  add_subdirectory(test EXCLUDE_FROM_ALL)
 endif()
