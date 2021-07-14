@@ -9,12 +9,6 @@ extern "C" {
 #endif
 
 int riscv_decode(struct riscv_insn *insn, uint32_t repr);
-void riscv_decode_r(struct riscv_insn *insn, int kind, uint32_t repr, uint32_t opcode);
-void riscv_decode_i(struct riscv_insn *insn, int kind, uint32_t repr, uint32_t opcode);
-void riscv_decode_s(struct riscv_insn *insn, int kind, uint32_t repr, uint32_t opcode);
-void riscv_decode_b(struct riscv_insn *insn, int kind, uint32_t repr, uint32_t opcode);
-void riscv_decode_u(struct riscv_insn *insn, int kind, uint32_t repr, uint32_t opcode);
-void riscv_decode_j(struct riscv_insn *insn, int kind, uint32_t repr, uint32_t opcode);
 
 int riscv_decode_rv32i_r(struct riscv_insn *insn, uint32_t repr, uint32_t opcode);
 int riscv_decode_rv32i_i(struct riscv_insn *insn, uint32_t repr, uint32_t opcode);
