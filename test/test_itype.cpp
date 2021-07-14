@@ -67,7 +67,7 @@ TEST(rv32i, itype_instructions_lhu) {
 
 TEST(rv32i, itype_instructions_addi) {
   struct riscv_insn ins;
-  riscv_decode(&ins, /* lhu a5,s0,-200 */ 0xf3840793);
+  riscv_decode(&ins, /* addi a5,s0,-200 */ 0xf3840793);
   EXPECT_EQ(ins.type, INSN_I);
   EXPECT_EQ(ins.kind, KIND_ADDI);
   EXPECT_EQ(ins.i.imm, -200);
