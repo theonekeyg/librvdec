@@ -21,6 +21,10 @@ int riscv_decode_rv64i_r(struct riscv_insn *insn, uint32_t repr, uint32_t opcode
 int riscv_decode_rv64i_i(struct riscv_insn *insn, uint32_t repr, uint32_t opcode);
 int riscv_decode_rv64i_s(struct riscv_insn *insn, uint32_t repr, uint32_t opcode);
 
+int riscv_decode_rv32m_r(struct riscv_insn *insn, uint32_t repr, uint32_t opcode);
+
+int riscv_decode_rv64m_r(struct riscv_insn *insn, uint32_t repr, uint32_t opcode);
+
 #ifdef __cplusplus
 }
 #endif

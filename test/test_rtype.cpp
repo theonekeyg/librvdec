@@ -149,4 +149,134 @@ TEST(rv64i, rtype_instructions_sraw) {
   EXPECT_EQ(ins.r.rs1, RVREG_a5);
   EXPECT_EQ(ins.r.rs2, RVREG_a4);
 }
+
+TEST(rv32m, rtype_instructions_mul) {
+  struct riscv_insn ins;
+  riscv_decode(&ins, /* mul t0,t3,t6 */ 0x03fe02b3);
+  EXPECT_EQ(ins.type, INSN_R);
+  EXPECT_EQ(ins.kind, RVINSN_MUL);
+  EXPECT_EQ(ins.r.rd, RVREG_t0);
+  EXPECT_EQ(ins.r.rs1, RVREG_t3);
+  EXPECT_EQ(ins.r.rs2, RVREG_t6);
+}
+
+TEST(rv32m, rtype_instructions_mulh) {
+  struct riscv_insn ins;
+  riscv_decode(&ins, /* mulh a4,s4,a3 */ 0x02da1733);
+  EXPECT_EQ(ins.type, INSN_R);
+  EXPECT_EQ(ins.kind, RVINSN_MULH);
+  EXPECT_EQ(ins.r.rd, RVREG_a4);
+  EXPECT_EQ(ins.r.rs1, RVREG_s4);
+  EXPECT_EQ(ins.r.rs2, RVREG_a3);
+}
+
+TEST(rv32m, rtype_instructions_mulhsu) {
+  struct riscv_insn ins;
+  riscv_decode(&ins, /* mulhsu a6,a2,ra */ 0x02162833);
+  EXPECT_EQ(ins.type, INSN_R);
+  EXPECT_EQ(ins.kind, RVINSN_MULHSU);
+  EXPECT_EQ(ins.r.rd, RVREG_a6);
+  EXPECT_EQ(ins.r.rs1, RVREG_a2);
+  EXPECT_EQ(ins.r.rs2, RVREG_ra);
+}
+
+TEST(rv32m, rtype_instructions_mulhu) {
+  struct riscv_insn ins;
+  riscv_decode(&ins, /* mulhu s2,s5,t5 */ 0x03eab933);
+  EXPECT_EQ(ins.type, INSN_R);
+  EXPECT_EQ(ins.kind, RVINSN_MULHU);
+  EXPECT_EQ(ins.r.rd, RVREG_s2);
+  EXPECT_EQ(ins.r.rs1, RVREG_s5);
+  EXPECT_EQ(ins.r.rs2, RVREG_t5);
+}
+
+TEST(rv32m, rtype_instructions_div) {
+  struct riscv_insn ins;
+  riscv_decode(&ins, /* div s8,sp,s2 */ 0x03214c33);
+  EXPECT_EQ(ins.type, INSN_R);
+  EXPECT_EQ(ins.kind, RVINSN_DIV);
+  EXPECT_EQ(ins.r.rd, RVREG_s8);
+  EXPECT_EQ(ins.r.rs1, RVREG_sp);
+  EXPECT_EQ(ins.r.rs2, RVREG_s2);
+}
+
+TEST(rv32m, rtype_instructions_divu) {
+  struct riscv_insn ins;
+  riscv_decode(&ins, /* divu a0,tp,a6 */ 0x03025533);
+  EXPECT_EQ(ins.type, INSN_R);
+  EXPECT_EQ(ins.kind, RVINSN_DIVU);
+  EXPECT_EQ(ins.r.rd, RVREG_a0);
+  EXPECT_EQ(ins.r.rs1, RVREG_tp);
+  EXPECT_EQ(ins.r.rs2, RVREG_a6);
+}
+
+TEST(rv32m, rtype_instructions_rem) {
+  struct riscv_insn ins;
+  riscv_decode(&ins, /* rem s4,s2,a2 */ 0x02c96a33);
+  EXPECT_EQ(ins.type, INSN_R);
+  EXPECT_EQ(ins.kind, RVINSN_REM);
+  EXPECT_EQ(ins.r.rd, RVREG_s4);
+  EXPECT_EQ(ins.r.rs1, RVREG_s2);
+  EXPECT_EQ(ins.r.rs2, RVREG_a2);
+}
+
+TEST(rv32m, rtype_instructions_remu) {
+  struct riscv_insn ins;
+  riscv_decode(&ins, /* remu s4,s2,s5 */ 0x03597a33);
+  EXPECT_EQ(ins.type, INSN_R);
+  EXPECT_EQ(ins.kind, RVINSN_REMU);
+  EXPECT_EQ(ins.r.rd, RVREG_s4);
+  EXPECT_EQ(ins.r.rs1, RVREG_s2);
+  EXPECT_EQ(ins.r.rs2, RVREG_s5);
+}
+
+TEST(rv64m, rtype_instructions_mulw) {
+  struct riscv_insn ins;
+  riscv_decode(&ins, /* mulw s3,t3,sp */ 0x022e09bb);
+  EXPECT_EQ(ins.type, INSN_R);
+  EXPECT_EQ(ins.kind, RVINSN_MULW);
+  EXPECT_EQ(ins.r.rd, RVREG_s3);
+  EXPECT_EQ(ins.r.rs1, RVREG_t3);
+  EXPECT_EQ(ins.r.rs2, RVREG_sp);
+}
+
+TEST(rv64m, rtype_instructions_divw) {
+  struct riscv_insn ins;
+  riscv_decode(&ins, /* divw a6,t0,a0 */ 0x02a2c83b);
+  EXPECT_EQ(ins.type, INSN_R);
+  EXPECT_EQ(ins.kind, RVINSN_DIVW);
+  EXPECT_EQ(ins.r.rd, RVREG_a6);
+  EXPECT_EQ(ins.r.rs1, RVREG_t0);
+  EXPECT_EQ(ins.r.rs2, RVREG_a0);
+}
+
+TEST(rv64m, rtype_instructions_divuw) {
+  struct riscv_insn ins;
+  riscv_decode(&ins, /* divuw a5,a2,s4 */ 0x034657bb);
+  EXPECT_EQ(ins.type, INSN_R);
+  EXPECT_EQ(ins.kind, RVINSN_DIVUW);
+  EXPECT_EQ(ins.r.rd, RVREG_a5);
+  EXPECT_EQ(ins.r.rs1, RVREG_a2);
+  EXPECT_EQ(ins.r.rs2, RVREG_s4);
+}
+
+TEST(rv64m, rtype_instructions_remw) {
+  struct riscv_insn ins;
+  riscv_decode(&ins, /* remw s7,a6,a2 */ 0x02c86bbb);
+  EXPECT_EQ(ins.type, INSN_R);
+  EXPECT_EQ(ins.kind, RVINSN_REMW);
+  EXPECT_EQ(ins.r.rd, RVREG_s7);
+  EXPECT_EQ(ins.r.rs1, RVREG_a6);
+  EXPECT_EQ(ins.r.rs2, RVREG_a2);
+}
+
+TEST(rv64m, rtype_instructions_remuw) {
+  struct riscv_insn ins;
+  riscv_decode(&ins, /* remuw a7,s2,t1 */ 0x026978bb);
+  EXPECT_EQ(ins.type, INSN_R);
+  EXPECT_EQ(ins.kind, RVINSN_REMUW);
+  EXPECT_EQ(ins.r.rd, RVREG_a7);
+  EXPECT_EQ(ins.r.rs1, RVREG_s2);
+  EXPECT_EQ(ins.r.rs2, RVREG_t1);
+}
 } // namespace rtype_insns

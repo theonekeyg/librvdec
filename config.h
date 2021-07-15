@@ -3,5 +3,7 @@
 
 #define SUPPORT_RV32I
 #define SUPPORT_RV64I
+#define SUPPORT_RV32M
+#define SUPPORT_RV64M
 
 #endif // RISCV_CONFIG_H

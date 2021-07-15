@@ -25,6 +25,14 @@ struct decoder_hooks decoder_hooks[] = {
 #if defined(SUPPORT_RV32I) || defined(SUPPORT_RV64I)
   RV32I_HOOKS_INIT,
 #endif
+
+#ifdef SUPPORT_RV64M
+  RV64M_HOOKS_INIT,
+#endif
+
+#if defined(SUPPORT_RV32M) || defined(SUPPORT_RV64M)
+  RV32M_HOOKS_INIT,
+#endif
 };
 
 #endif // DECODER_HOOKS_H

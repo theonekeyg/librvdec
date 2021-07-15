@@ -23,6 +23,8 @@ enum InstructionType {
 enum RISCVKindInstruction {
 #include "insn_set_defs/rv32i.def"
 #include "insn_set_defs/rv64i.def"
+#include "insn_set_defs/rv32m.def"
+#include "insn_set_defs/rv64m.def"
 #undef INSN
 #undef CUSTOM_ABI_INSN
   RVINSN_ILLEGAL
@@ -34,6 +36,8 @@ enum RISCVKindInstruction {
 static const char *riscv_kind_names[] = {
 #include "insn_set_defs/rv32i.def"
 #include "insn_set_defs/rv64i.def"
+#include "insn_set_defs/rv32m.def"
+#include "insn_set_defs/rv64m.def"
 #undef INSN
 #undef CUSTOM_ABI_INSN
 };
