@@ -1,8 +1,8 @@
 # librvdec - Library for decoding RISC-V ISA.
 
-**Currently only RV32I and RV64I instruction sets are implemented.**
+**Currently only RV32I, RV64I, RV32M and RV64M instruction sets are implemented.**
 
-## Installation 
+## Installation
 
 The library provides a way of selecting which instruction sets should be
 supported for decoding. Simply comment unwanted instruction sets in `config.h`,
@@ -62,7 +62,7 @@ int main() {
 
 ## Forking
 
-The library was designed with a goal to make adding (and modifying) instruction
+The library was designed with a goal to make adding/modifying instruction
 sets (and instruction types) as easy as possible. Which also makes it easy to
 fork the library to add specific RISC-V extensions, or reuse the design for
 other ISAs.
