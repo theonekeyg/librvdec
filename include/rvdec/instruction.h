@@ -40,6 +40,7 @@ static const char *riscv_kind_names[] = {
 #include "insn_set_defs/rv64m.def"
 #undef INSN
 #undef CUSTOM_ABI_INSN
+  "RVINSN_ILLEGAL"
 };
 
 struct riscv_insn {
