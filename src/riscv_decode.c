@@ -679,7 +679,7 @@ int rvc_decode(struct riscv_insn *insn, uint32_t repr) {
   return RVINSN_ILLEGAL;
 }
 
-int rvc_decode_cr(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
+int rvc_decode_cr_rv32(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
   /* uint32_t funct3 = (repr & (0b111 << 12)) >> 12; */
   uint32_t funct3 = (repr >> 13) & 0b111;
   uint32_t funct4 = (repr >> 12) & 1;
@@ -723,12 +723,13 @@ int rvc_decode_cr(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
         }
         return 1;
       }
+      break;
     }
   }
   return 0;
 }
 
-int rvc_decode_ci(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
+int rvc_decode_ci_rv32(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
   uint32_t funct3 = (repr >> 13) & 0b111;
   switch (opcode) {
     case 0b01: {
@@ -784,16 +785,8 @@ int rvc_decode_ci(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
         }
         riscv_init_i(insn, RVINSN_ADDI, sign_extend_to(imm, 5, 12), rd, rd);
         return 1;
-      } else if (funct3 == 0b001) {
-        // C.ADDIW -> `addiw rd,rd, imm[5:0]`, when imm == 0 -> `sext.w rd`
-        uint32_t imm = (((repr >> 12) & 1) << 5) | ((repr >> 2) & 0b11111);
-        uint32_t rd = (repr >> 7) & 0b11111;
-        if (rd == 0) {
-          break;
-        }
-        riscv_init_i(insn, RVINSN_ADDIW, sign_extend_to(imm, 5, 12), rd, rd);
-        return 1;
       }
+      break;
     }
     case 0b10: {
       if (funct3 == 0b000) {
@@ -823,17 +816,6 @@ int rvc_decode_ci(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
         }
         riscv_init_i(insn, RVINSN_LW, imm, rd, RVREG_sp);
         return 1;
-      } else if (funct3 == 0b011) {
-        // C.LDSP -> `ld rd, offset[8:3](x2)`
-        uint32_t imm = (((repr >> 5) & 0b11) |
-          (((repr >> 12) & 1) << 2) |
-          (((repr >> 2) & 0b111) << 3)) << 3;
-        uint32_t rd = (repr >> 7) & 0b11111;
-        if (rd == 0) {
-          break;
-        }
-        riscv_init_i(insn, RVINSN_LD, imm, rd, RVREG_sp);
-        return 1;
       } else if (funct3 == 0b001) {
         // C.LQSP -> `lq rd, offset[9:4](x2)`
         // | C.FLDSP ->  `flw rd, offset[7:2](x2)`
@@ -847,12 +829,13 @@ int rvc_decode_ci(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
         // TODO: implement RV32FC instruction set.
         break;
       }
+      break;
     }
   }
   return 0;
 }
 
-int rvc_decode_css(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
+int rvc_decode_css_rv32(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
   uint32_t funct3 = (repr >> 13) & 0b111;
   switch (opcode) {
     case 0b10: {
@@ -864,17 +847,6 @@ int rvc_decode_css(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
           (((repr >> 7) & 0b11) << 4)) << 2;
         riscv_init_s(insn, RVINSN_SW, imm, rs2, RVREG_sp);
         return 1;
-      } else if (funct3 == 0b111) {
-        // C.SDSP -> `sd rs2, offset[8:3](x2)`
-        // Also expands to in RV32I code:
-        // C.FSWSP -> `fsw rs2, offset[7:2](x2)`
-        // TODO: Implement RV32FC
-        uint32_t rs2 = (repr >> 2) & 0b11111;
-        uint32_t imm =
-          (((repr >> 10) & 0b111) |
-          (((repr >> 7) & 0b111) << 3)) << 3;
-        riscv_init_s(insn, RVINSN_SD, imm, rs2, RVREG_sp);
-        return 1;
       } else if (funct3 == 0b101) {
         // C.SQSP -> `sq rs2, offset[9:4](x2)`
         // TODO: Implement RV128I for sq instruction, for now just treat it like illegal instruction.
@@ -882,12 +854,13 @@ int rvc_decode_css(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
         // C.FSDSP -> `fsd rs2, offset[8:3](x2)`
         // TODO: Implement RV32FC
       }
+      break;
     }
   }
   return 0;
 }
 
-int rvc_decode_ciw(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
+int rvc_decode_ciw_rv32(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
   uint32_t funct3 = (repr >> 13) & 0b111;
   switch (opcode) {
     case 0b00: {
@@ -902,12 +875,13 @@ int rvc_decode_ciw(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
         riscv_init_i(insn, RVINSN_ADDI, imm, RVREG_sp, RVREG16(rd));
         return 1;
       }
+      break;
     }
   }
   return 0;
 }
 
-int rvc_decode_cl(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
+int rvc_decode_cl_rv32(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
   uint32_t funct3 = (repr >> 13) & 0b111;
   switch (opcode) {
     case 0b00: {
@@ -921,18 +895,6 @@ int rvc_decode_cl(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
         uint32_t rs1 = (repr >> 7) & 0b111;
         riscv_init_i(insn, RVINSN_LW, imm, RVREG16(rs1), RVREG16(rd));
         return 1;
-      } else if (funct3 == 0b011) {
-        // C.LD -> `ld rd′, offset[7:3](rs1′)`
-        // Also expands to in RV32I code:
-        // C.FLW -> `flw rd′, offset[6:2](rs1′)`
-        // TODO: Implement RV32FC
-        uint32_t rd = (repr >> 2) & 0b111;
-        uint32_t imm =
-          (((repr >> 10) & 0b111) |
-           (((repr >> 5) & 0b11) << 3)) << 3;
-        uint32_t rs1 = (repr >> 7) & 0b111;
-        riscv_init_i(insn, RVINSN_LD, imm, RVREG16(rs1), RVREG16(rd));
-        return 1;
       } else if (funct3 == 0b001) {
         // C.LQ -> `lq rd′, offset[8:4](rs1′)`
         // TODO: Implement RV128I for lq instruction, for now just treat it like illegal instruction.
@@ -940,12 +902,13 @@ int rvc_decode_cl(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
         // C.FLD -> `fld rd′, offset[6:2](rs1′)`
         // TODO: Implement RV32FC
       }
+      break;
     }
   }
   return 0;
 }
 
-int rvc_decode_cs(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
+int rvc_decode_cs_rv32(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
   uint32_t funct3 = (repr >> 13) & 0b111;
   switch (opcode) {
     case 0b00: {
@@ -959,18 +922,6 @@ int rvc_decode_cs(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
         uint32_t rs1 = (repr >> 7) & 0b111;
         riscv_init_s(insn, RVINSN_SW, imm, RVREG16(rs2), RVREG16(rs1));
         return 1;
-      } else if (funct3 == 0b111) {
-        // C.SD -> `sd rs2′, offset[7:3](rs1′)`
-        // Also expands to in RV32I code:
-        // C.FSW -> `fsw rs2′, offset[6:2](rs1′)`
-        // TODO: Implement RV32FC
-        uint32_t rs2 = (repr >> 2) & 0b111;
-        uint32_t imm =
-          (((repr >> 10) & 0b111) |
-          (((repr >> 5) & 0b11) << 3)) << 3;
-        uint32_t rs1 = (repr >> 7) & 0b111;
-        riscv_init_s(insn, RVINSN_SD, imm, RVREG16(rs2), RVREG16(rs1));
-        return 1;
       } else if (funct3 == 0b101) {
         // C.SQ -> `sq rs2′, offset[8:4](rs1′)`
         // TODO: Implement RV128I for sq instruction, for now just treat it like illegal instruction.
@@ -978,12 +929,13 @@ int rvc_decode_cs(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
         // C.FSD -> `fsd rs2′,offset[7:3](rs1′)`
         // TODO: Implement RV32FC
       }
+      break;
     }
   }
   return 0;
 }
 
-int rvc_decode_ca(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
+int rvc_decode_ca_rv32(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
   uint32_t funct3 = (repr >> 13) & 0b111;
   uint32_t funct4 = (repr >> 12) & 1;
   uint32_t funct6 = (repr >> 10) & 0b11;
@@ -994,8 +946,6 @@ int rvc_decode_ca(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
         // | C.OR -> `or rd′, rd′, rs2′`
         // | C.XOR -> `xor rd′, rd′, rs2′`
         // | C.SUB -> `sub rd′, rd′, rs2′`
-        // | C.ADDW -> `addw rd′, rd′, rs2′`
-        // | C.SUBW -> `subw rd′, rd′, rs2′`
         uint32_t funct2 = (repr >> 5) & 0b11;
         uint32_t rs1 = (repr >> 7) & 0b111; // Also `rd`
         uint32_t rs2 = (repr >> 2) & 0b111;
@@ -1018,25 +968,16 @@ int rvc_decode_ca(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
               riscv_init_r(insn, RVINSN_SUB, RVREG16(rs2), RVREG16(rs1), RVREG16(rs1));
               return 1;
             }
-          } else {
-            if (funct2 == 0b01) {
-              // C.ADDW -> `addw rd′, rd′, rs2′`
-              riscv_init_r(insn, RVINSN_ADDW, RVREG16(rs2), RVREG16(rs1), RVREG16(rs1));
-              return 1;
-            } else if (funct2 == 0b00) {
-              // C.SUBW -> `subw rd′, rd′, rs2′`
-              riscv_init_r(insn, RVINSN_SUBW, RVREG16(rs2), RVREG16(rs1), RVREG16(rs1));
-              return 1;
-            }
           }
         }
       }
+      break;
     }
   }
   return 0;
 }
 
-int rvc_decode_cb(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
+int rvc_decode_cb_rv32(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
   uint32_t funct3 = (repr >> 13) & 0b111;
   switch (opcode) {
     case 0b01: {
@@ -1083,12 +1024,13 @@ int rvc_decode_cb(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
           return 1;
         }
       }
+      break;
     }
   }
   return 0;
 }
 
-int rvc_decode_cj(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
+int rvc_decode_cj_rv32(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
   uint32_t funct3 = (repr >> 13) & 0b111;
   switch (opcode) {
     case 0b01: {
@@ -1105,7 +1047,154 @@ int rvc_decode_cj(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
            (((repr >> 12) & 1) << 10)) << 1;
         riscv_init_j(insn, RVINSN_JAL, sign_extend_to(imm, 11, 20));
         return 1;
-      } else if (funct3 == 0b001) {
+      }
+      break;
+    }
+  }
+  return 0;
+}
+
+int rvc_decode_ci_rv64(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
+  uint32_t funct3 = (repr >> 13) & 0b111;
+  switch (opcode) {
+    case 0b01: {
+      if (funct3 == 0b001) {
+        // C.ADDIW -> `addiw rd,rd, imm[5:0]`, when imm == 0 -> `sext.w rd`
+        uint32_t imm = (((repr >> 12) & 1) << 5) | ((repr >> 2) & 0b11111);
+        uint32_t rd = (repr >> 7) & 0b11111;
+        if (rd == 0) {
+          break;
+        }
+        riscv_init_i(insn, RVINSN_ADDIW, sign_extend_to(imm, 5, 12), rd, rd);
+        return 1;
+      }
+      break;
+      // TODO: C.SLLI64
+    }
+    case 0b10: {
+      if (funct3 == 0b011) {
+        // C.LDSP -> `ld rd, offset[8:3](x2)`
+        uint32_t imm = (((repr >> 5) & 0b11) |
+          (((repr >> 12) & 1) << 2) |
+          (((repr >> 2) & 0b111) << 3)) << 3;
+        uint32_t rd = (repr >> 7) & 0b11111;
+        if (rd == 0) {
+          break;
+        }
+        riscv_init_i(insn, RVINSN_LD, imm, rd, RVREG_sp);
+        return 1;
+      }
+      break;
+    }
+  }
+  return 0;
+}
+
+int rvc_decode_css_rv64(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
+  uint32_t funct3 = (repr >> 13) & 0b111;
+  switch (opcode) {
+    case 0b10: {
+      if (funct3 == 0b111) {
+        // C.SDSP -> `sd rs2, offset[8:3](x2)`
+        // Also expands to in RV32I code:
+        // C.FSWSP -> `fsw rs2, offset[7:2](x2)`
+        // TODO: Implement RV32FC
+        uint32_t rs2 = (repr >> 2) & 0b11111;
+        uint32_t imm =
+          (((repr >> 10) & 0b111) |
+          (((repr >> 7) & 0b111) << 3)) << 3;
+        riscv_init_s(insn, RVINSN_SD, imm, rs2, RVREG_sp);
+        return 1;
+      }
+      break;
+    }
+  }
+  return 0;
+}
+
+int rvc_decode_cl_rv64(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
+  uint32_t funct3 = (repr >> 13) & 0b111;
+  switch (opcode) {
+    case 0b00: {
+      if (funct3 == 0b011) {
+        // C.LD -> `ld rd′, offset[7:3](rs1′)`
+        // Also expands to in RV32I code:
+        // C.FLW -> `flw rd′, offset[6:2](rs1′)`
+        // TODO: Implement RV32FC
+        uint32_t rd = (repr >> 2) & 0b111;
+        uint32_t imm =
+          (((repr >> 10) & 0b111) |
+           (((repr >> 5) & 0b11) << 3)) << 3;
+        uint32_t rs1 = (repr >> 7) & 0b111;
+        riscv_init_i(insn, RVINSN_LD, imm, RVREG16(rs1), RVREG16(rd));
+        return 1;
+      }
+      break;
+    }
+  }
+  return 0;
+}
+
+int rvc_decode_cs_rv64(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
+  uint32_t funct3 = (repr >> 13) & 0b111;
+  switch (opcode) {
+    case 0b00: {
+      if (funct3 == 0b111) {
+        // C.SD -> `sd rs2′, offset[7:3](rs1′)`
+        // Also expands to in RV32I code:
+        // C.FSW -> `fsw rs2′, offset[6:2](rs1′)`
+        // TODO: Implement RV32FC
+        uint32_t rs2 = (repr >> 2) & 0b111;
+        uint32_t imm =
+          (((repr >> 10) & 0b111) |
+          (((repr >> 5) & 0b11) << 3)) << 3;
+        uint32_t rs1 = (repr >> 7) & 0b111;
+        riscv_init_s(insn, RVINSN_SD, imm, RVREG16(rs2), RVREG16(rs1));
+        return 1;
+      }
+      break;
+    }
+  }
+  return 0;
+}
+
+int rvc_decode_ca_rv64(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
+  uint32_t funct3 = (repr >> 13) & 0b111;
+  uint32_t funct4 = (repr >> 12) & 1;
+  uint32_t funct6 = (repr >> 10) & 0b11;
+  switch (opcode) {
+    case 0b01: {
+      if (funct3 == 0b100) {
+        // C.ADDW -> `addw rd′, rd′, rs2′`
+        // | C.SUBW -> `subw rd′, rd′, rs2′`
+        uint32_t funct2 = (repr >> 5) & 0b11;
+        uint32_t rs1 = (repr >> 7) & 0b111; // Also `rd`
+        uint32_t rs2 = (repr >> 2) & 0b111;
+        if (funct6 == 0b11) {
+          if (funct4 == 0b1) {
+            if (funct2 == 0b01) {
+              // C.ADDW -> `addw rd′, rd′, rs2′`
+              riscv_init_r(insn, RVINSN_ADDW, RVREG16(rs2), RVREG16(rs1), RVREG16(rs1));
+              return 1;
+            } else if (funct2 == 0b00) {
+              // C.SUBW -> `subw rd′, rd′, rs2′`
+              riscv_init_r(insn, RVINSN_SUBW, RVREG16(rs2), RVREG16(rs1), RVREG16(rs1));
+              return 1;
+            }
+          }
+        }
+      }
+      break;
+    }
+  }
+  return 0;
+}
+
+int rvc_decode_cj_rv64(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
+  uint32_t funct3 = (repr >> 13) & 0b111;
+  switch (opcode) {
+    case 0b01: {
+      if (funct3 == 0b001) {
         // C.JAL -> `jal x1, offset[11:1]`
         uint32_t imm =
           (((repr >> 3) & 0b111) |
@@ -1119,6 +1208,7 @@ int rvc_decode_cj(struct riscv_insn *insn, uint32_t repr, uint32_t opcode) {
         riscv_init_j(insn, RVINSN_JAL, sign_extend_to(imm, 11, 20));
         return 1;
       }
+      break;
     }
   }
   return 0;

@@ -53,17 +53,13 @@ struct decoder_hooks16 {
 };
 
 struct decoder_hooks16 decoder_hooks16[] = {
-  {
-    rvc_decode_cr,
-    rvc_decode_ci,
-    rvc_decode_css,
-    rvc_decode_ciw,
-    rvc_decode_cl,
-    rvc_decode_cs,
-    rvc_decode_ca,
-    rvc_decode_cb,
-    rvc_decode_cj
-  }
+#if  defined(SUPPORT_RV64I)
+  RVC_HOOKS_INIT_RV64,
+#endif
+
+#if defined(SUPPORT_RV32I) || defined(SUPPORT_RV64I)
+  RVC_HOOKS_INIT_RV32
+#endif
 };
 
 #endif // SUPPORT_COMPRESSED
