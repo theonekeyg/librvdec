@@ -2,19 +2,21 @@
 #define RISCV_INSN_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 enum InstructionType {
+  INSN_UNDEFINED,
   INSN_R,
   INSN_I,
   INSN_S,
   INSN_B,
   INSN_U,
   INSN_J,
-  INSN_UNDEFINED
+  INSN_FENCE
 };
 
 #define INSN(insn, type) RVINSN_##insn,
@@ -25,6 +27,7 @@ enum RISCVKindInstruction {
 #include "insn_set_defs/rv64i.def"
 #include "insn_set_defs/rv32m.def"
 #include "insn_set_defs/rv64m.def"
+
 #undef INSN
 #undef CUSTOM_ABI_INSN
   RVINSN_ILLEGAL
@@ -46,6 +49,7 @@ static const char *riscv_kind_names[] = {
 struct riscv_insn {
   int type;
   int kind;
+  bool is_compressed;
   union {
 /* R Type Instruction
  *  31           25 24   20 19   15 14      12 11           7 6      0
@@ -124,6 +128,130 @@ struct riscv_insn {
       uint32_t opcode : 7;
     } j;
 
+
+#ifdef SUPPORT_COMPRESSED
+
+/* CR (Register) Type Instruction
+ *  15 14 13   12   11 10   9 8 7   6 5   4 3 2   1  0
+ * -----------------------------------------------------
+ * |   funct4     |    rd/rs1     |    rs2      |  op  |
+ * -----------------------------------------------------
+ */
+    struct cr {
+      uint32_t funct3 : 4;
+      uint32_t rd : 5;
+      uint32_t rs2 : 5;
+      uint32_t op : 2;
+    } cr;
+
+/* CI (Immediate) Type Instruction
+ *  15 14 13   12   11 10   9 8 7   6 5   4 3 2   1  0
+ * -----------------------------------------------------
+ * | funct3  |imm |    rd/rs1     |    imm      |  op  |
+ * -----------------------------------------------------
+ */
+    struct ci {
+      uint32_t funct3 : 3;
+      int32_t imm : 6;
+      uint32_t rd : 5;
+      uint32_t op : 2;
+    } ci;
+
+/* CSS (Stack-relative Store) Type Instruction
+ *  15 14 13   12   11 10   9 8 7   6 5   4 3 2   1  0
+ * -----------------------------------------------------
+ * | funct3  |       imm          |    rs2      |  op  |
+ * -----------------------------------------------------
+ */
+    struct css {
+      uint32_t funct3 : 3;
+      int32_t imm : 6;
+      uint32_t rs2 : 5;
+      uint32_t op : 2;
+    } css;
+
+/* CIW (Wide Immediate) Type Instruction
+ *  15 14 13   12   11 10   9 8 7   6 5   4 3 2   1  0
+ * -----------------------------------------------------
+ * | funct3  |           imm            |  rd'  |  op  |
+ * -----------------------------------------------------
+ */
+    struct ciw {
+      uint32_t funct3 : 3;
+      int32_t imm : 8;
+      uint32_t rd : 3;
+      uint32_t op : 2;
+    } ciw;
+
+/* CL (Load) Type Instruction
+ *  15 14 13   12   11 10   9 8 7   6 5   4 3 2   1  0
+ * -----------------------------------------------------
+ * | funct3  |    imm     |  rs1' | imm |  rd'  |  op  |
+ * -----------------------------------------------------
+ */
+    struct cl {
+      uint32_t funct3 : 3;
+      int32_t imm : 5;
+      uint32_t rs1 : 3;
+      uint32_t rd : 3;
+      uint32_t op : 2;
+    } cl;
+
+/* CS (Store) Type Instruction
+ *  15 14 13   12   11 10   9 8 7   6 5   4 3 2   1  0
+ * -----------------------------------------------------
+ * | funct3  |    imm     |  rs1' | imm |  rs2' |  op  |
+ * -----------------------------------------------------
+ */
+    struct cs {
+      uint32_t funct3 : 3;
+      int32_t imm : 5;
+      uint32_t rs1 : 3;
+      uint32_t rs2 : 3;
+      uint32_t op : 2;
+    } cs;
+
+/* CA (Arithmetic) Type Instruction
+ *  15 14 13   12   11 10   9 8 7   6 5   4 3 2   1  0
+ * -----------------------------------------------------
+ * |        funct6        |rd/rs1'|func2|  rs2' |  op  |
+ * -----------------------------------------------------
+ */
+    struct ca {
+      uint32_t funct6 : 6;
+      uint32_t rd : 3;
+      uint32_t funct2 : 2;
+      uint32_t rs2 : 3;
+      uint32_t op : 2;
+    } ca;
+
+/* CB (Branch) Type Instruction
+ *  15 14 13   12   11 10   9 8 7   6 5   4 3 2   1  0
+ * -----------------------------------------------------
+ * | funct3  |   offset   |  rs1' |   offset    |  op  |
+ * -----------------------------------------------------
+ */
+    struct cb {
+      uint32_t funct3 : 3;
+      uint32_t offset : 8;
+      uint32_t rs1 : 3;
+      uint32_t op : 2;
+    } cb;
+
+/* CJ (Jump) Type Instruction
+ *  15 14 13   12   11 10   9 8 7   6 5   4 3 2   1  0
+ * -----------------------------------------------------
+ * | funct3  |           jump target            |  op  |
+ * -----------------------------------------------------
+ */
+    struct cj {
+      uint32_t funct3 : 3;
+      uint32_t target : 11;
+      uint32_t op : 2;
+    } cj;
+
+#endif // SUPPORT_COMPRESSED
+
     /* The latter structures are meant to be used to specific ABI instructions.
      * Handling them this way may not be ideal, as it requires to have
      * separate structure for each weird instruction and some of
@@ -141,22 +269,6 @@ struct riscv_insn {
 
   };
 };
-
-void riscv_decode_r(struct riscv_insn *insn, int kind, uint32_t repr,
-    uint32_t opcode);
-void riscv_decode_i(struct riscv_insn *insn, int kind, uint32_t repr,
-    uint32_t opcode);
-void riscv_decode_i_shamt(struct riscv_insn *insn, int kind, uint32_t repr,
-    uint32_t opcode, int shamt_bits_size);
-void riscv_decode_s(struct riscv_insn *insn, int kind, uint32_t repr,
-    uint32_t opcode);
-void riscv_decode_b(struct riscv_insn *insn, int kind, uint32_t repr,
-    uint32_t opcode);
-void riscv_decode_u(struct riscv_insn *insn, int kind, uint32_t repr,
-    uint32_t opcode);
-void riscv_decode_j(struct riscv_insn *insn, int kind, uint32_t repr,
-    uint32_t opcode);
-void riscv_decode_fence(struct riscv_insn *insn, uint32_t repr, uint32_t opcode);
 
 #ifdef __cplusplus
 }

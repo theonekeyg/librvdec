@@ -17,6 +17,7 @@ add_executable(riscv_decoder_test
   test_btype.cpp
   test_utype.cpp
   test_jtype.cpp
+  test_compressed.cpp
 )
 
 target_link_libraries(riscv_decoder_test gtest_main)

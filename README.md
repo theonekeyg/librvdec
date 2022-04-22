@@ -1,7 +1,8 @@
 # librvdec - Library for decoding RISC-V ISA.
 
 Here is the [manual](https://github.com/theonekeyg/librvdec/wiki/riscv-spec-20191213.pdf)
-that was used for implementing the ISA standard.
+that was used for implementing the ISA standard. The current implementation
+**does not** recognize and emit assembler pseudo-instructions.
 
 **Currently only RV32I, RV64I, RV32M and RV64M instruction sets are implemented.**
 
